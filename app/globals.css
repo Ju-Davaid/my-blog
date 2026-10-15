@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-/* ==========================================================================
-   MORI BLOG — Design Tokens
-   复刻自 shijiucode.cn 的主题变量体系（迁移自静态站 src/input.css）
-   ========================================================================== */
 
 @custom-variant dark (&:where(.dark, .dark *));
 

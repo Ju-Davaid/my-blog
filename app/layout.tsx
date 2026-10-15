@@ -19,10 +19,10 @@ const notoSerif = Noto_Serif_SC({
 
 export const metadata: Metadata = {
   title: {
-    default: "MORI BLOG · 用镜头和文字记录生活的温度",
-    template: "%s · MORI BLOG",
+    default: "DAVID BLOG · 用镜头和文字记录生活的温度",
+    template: "%s · DAVAID BLOG",
   },
-  description: "森屿的个人博客 —— 编程、摄影、音乐与生活的记录。",
+  description: "David的个人博客 —— 编程、摄影、音乐与生活的记录。",
 };
 
 /* 主题防闪烁脚本：在首帧渲染前确定 light / dark / system 并写入 <html> */

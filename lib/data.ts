@@ -1,11 +1,10 @@
 /* ==========================================================================
-   MORI BLOG — 站点数据层
-   从静态站 assets/js/main.js 的 SITE / ALBUMS 及各 HTML 内联内容抽离而来
+   DAVAID BLOG — 站点数据层
    ========================================================================== */
 
 export const SITE = {
-  brand: "MORI BLOG",
-  author: "森屿",
+  brand: "DAVID BLOG",
+  author: "David",
   nav: [
     { label: "首页", href: "/", icon: "house" },
     { label: "文章", href: "/articles", icon: "file-text" },

@@ -18,7 +18,7 @@ export default function HomePage() {
         </p>
 
         <h1 className="font-serif text-4xl font-semibold leading-tight tracking-wide text-foreground text-balance md:text-6xl">
-          森屿的个人博客
+          David的个人博客
         </h1>
 
         <blockquote className="mt-6 max-w-2xl border-l-2 border-primary/50 pl-4 font-serif text-base leading-relaxed text-muted-foreground md:text-lg">
@@ -36,7 +36,9 @@ export default function HomePage() {
             className="group inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/25"
           >
             开始阅读
-            <span className="transition-transform group-hover:translate-x-0.5">→</span>
+            <span className="transition-transform group-hover:translate-x-0.5">
+              →
+            </span>
           </Link>
           <Link
             href="/albums"
@@ -55,7 +57,9 @@ export default function HomePage() {
             { label: "标签", value: STATS.tags },
           ].map((s) => (
             <div key={s.label}>
-              <dt className="text-xs tracking-[0.12em] text-muted-foreground">{s.label}</dt>
+              <dt className="text-xs tracking-[0.12em] text-muted-foreground">
+                {s.label}
+              </dt>
               <dd className="mt-2 font-serif text-3xl font-semibold tabular-nums text-foreground">
                 {s.value}
               </dd>
@@ -67,22 +71,31 @@ export default function HomePage() {
       {/* 置顶文章 */}
       <Reveal>
         <div className="mb-5 flex items-end justify-between">
-          <h2 className="font-serif text-xl tracking-wide text-foreground">置顶</h2>
-          <span className="text-xs tracking-widest text-muted-foreground">PINNED</span>
+          <h2 className="font-serif text-xl tracking-wide text-foreground">
+            置顶
+          </h2>
+          <span className="text-xs tracking-widest text-muted-foreground">
+            PINNED
+          </span>
         </div>
 
         {pinned && (
-          <Link href={`/posts/${pinned.slug}`} className="card card-hover group block overflow-hidden">
+          <Link
+            href={`/posts/${pinned.slug}`}
+            className="card card-hover group block overflow-hidden"
+          >
             <div className="flex flex-col gap-0 md:flex-row">
               <div
-                className="relative flex min-h-[168px] items-center justify-center overflow-hidden border-b border-border md:w-2/5 md:border-b-0 md:border-r"
+                className="relative flex min-h-42 items-center justify-center overflow-hidden border-b border-border md:w-2/5 md:border-b-0 md:border-r"
                 style={{
                   background:
                     "linear-gradient(135deg, color-mix(in oklab, var(--primary) 18%, transparent), color-mix(in oklab, var(--accent) 16%, transparent))",
                 }}
               >
                 <div className="dot-grid absolute inset-0 opacity-60"></div>
-                <span className="relative font-serif text-5xl tracking-[0.2em] text-primary/45">01</span>
+                <span className="relative font-serif text-5xl tracking-[0.2em] text-primary/45">
+                  01
+                </span>
               </div>
               <div className="flex-1 p-6 md:p-7">
                 <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -105,8 +118,8 @@ export default function HomePage() {
                     {pinned.date}
                   </span>
                   <span className="inline-flex items-center gap-1.5">
-                    <Icon name="clock" className="h-3.5 w-3.5" />
-                    约 {pinned.readTime}
+                    <Icon name="clock" className="h-3.5 w-3.5" />约{" "}
+                    {pinned.readTime}
                   </span>
                 </div>
               </div>
@@ -118,8 +131,13 @@ export default function HomePage() {
       {/* 最新文章 */}
       <Reveal className="mt-16">
         <div className="mb-5 flex items-end justify-between">
-          <h2 className="font-serif text-xl tracking-wide text-foreground">最新文章</h2>
-          <Link href="/articles" className="text-xs tracking-widest text-muted-foreground transition-colors hover:text-primary">
+          <h2 className="font-serif text-xl tracking-wide text-foreground">
+            最新文章
+          </h2>
+          <Link
+            href="/articles"
+            className="text-xs tracking-widest text-muted-foreground transition-colors hover:text-primary"
+          >
             全部 →
           </Link>
         </div>
@@ -134,8 +152,13 @@ export default function HomePage() {
       {/* 标签 */}
       <Reveal className="mt-16">
         <div className="mb-5 flex items-end justify-between">
-          <h2 className="font-serif text-xl tracking-wide text-foreground">标签</h2>
-          <Link href="/articles#tags" className="text-xs tracking-widest text-muted-foreground transition-colors hover:text-primary">
+          <h2 className="font-serif text-xl tracking-wide text-foreground">
+            标签
+          </h2>
+          <Link
+            href="/articles#tags"
+            className="text-xs tracking-widest text-muted-foreground transition-colors hover:text-primary"
+          >
             按标签看 →
           </Link>
         </div>
@@ -156,8 +179,12 @@ export default function HomePage() {
       {/* 归档时间线 */}
       <Reveal className="mt-16">
         <div className="mb-8 flex items-end justify-between">
-          <h2 className="font-serif text-xl tracking-wide text-foreground">归档</h2>
-          <span className="text-xs tracking-widest text-muted-foreground">ARCHIVE</span>
+          <h2 className="font-serif text-xl tracking-wide text-foreground">
+            归档
+          </h2>
+          <span className="text-xs tracking-widest text-muted-foreground">
+            ARCHIVE
+          </span>
         </div>
 
         <div className="timeline space-y-9">
@@ -171,7 +198,11 @@ export default function HomePage() {
               </div>
               <div className="ml-[28px] mt-2 space-y-1.5">
                 {group.items.map((item, i) => (
-                  <Link key={i} href={`/posts/${item.slug}`} className="timeline-row">
+                  <Link
+                    key={i}
+                    href={`/posts/${item.slug}`}
+                    className="timeline-row"
+                  >
                     <span className="tl-date">{item.dateLabel}</span>
                     <span className="tl-title line-clamp-1">{item.title}</span>
                   </Link>

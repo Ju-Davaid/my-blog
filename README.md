@@ -1,4 +1,4 @@
-# MORI BLOG
+# DAVAID BLOG
 
 基于 **Next.js 16 + Tailwind CSS v4** 的个人博客。
 

@@ -1,6 +1,7 @@
 import SiteHeader from "./SiteHeader";
 import Footer from "./Footer";
 import MobileNav from "./MobileNav";
+import BackToTop from "./BackToTop";
 import { LightboxProvider } from "@/components/media";
 
 /**
@@ -20,6 +21,8 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
       <Footer />
       {/* 移动端底部导航 */}
       <MobileNav />
+      {/* 回到顶部（带阅读进度环） */}
+      <BackToTop />
     </LightboxProvider>
   );
 }

@@ -23,6 +23,33 @@ pnpm start     # 启动生产服务
 
 > 支持查询参数强制主题：`/?theme=dark`（可选 light / dark / system）。
 
+## Docker 部署
+
+```bash
+docker build -t my-blog:latest .                 # 构建镜像
+docker run -d --name blog -p 3000:3000 my-blog:latest   # 启动容器
+# 打开 http://localhost:3000
+```
+
+镜像采用多阶段构建（依赖 → 构建 → 运行），运行阶段基于 `node:22-slim` + Next.js `standalone` 产物，以非 root 用户运行，并内置健康检查。
+
+| 构建参数 / 环境变量    | 默认值       | 说明                                  |
+| ---------------------- | ------------ | ------------------------------------- |
+| `NODE_VERSION`（build-arg） | `24.4.0` | 基础镜像的 Node 版本                  |
+| `PORT`（env）          | `3000`       | 容器内监听端口（`HOSTNAME=0.0.0.0`）  |
+| `NEXT_TELEMETRY_DISABLED`   | `1`     | 已在镜像内关闭 Next.js 遥测           |
+
+示例：指定 Node 版本与端口
+
+```bash
+docker build --build-arg NODE_VERSION=22 -t my-blog:latest .
+docker run -d -p 8080:3000 -e PORT=3000 my-blog:latest
+```
+
+实测：镜像约 **412 MB**，容器以 `nextjs`(uid 1001) 非 root 运行，健康检查 `healthy`，`/`、`/moments`、`/articles`、`/albums`、`/about`、`/posts/[slug]` 均 200，`/_next/image` 图片优化（sharp）正常。
+
+> 若构建时拉取基础镜像或依赖较慢，可给 Docker 配置镜像加速（registry mirror）后再构建。
+
 ## 页面路由
 
 | 路由            | 说明                                                   |

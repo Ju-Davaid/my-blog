@@ -1,0 +1,30 @@
+# 不进入构建上下文，避免把本地产物/机密带进镜像并加快构建
+.git
+.gitignore
+.workbuddy
+node_modules
+npm-debug.log*
+.pnpm-debug.log*
+
+# Next.js 构建产物（容器内重新构建，平台可能不同）
+.next
+out
+build
+*.tsbuildinfo
+next-env.d.ts
+
+# 环境变量与本地配置
+.env*
+!.env.example
+
+# Docker / 文档
+Dockerfile
+.dockerignore
+docker-compose*.yml
+README.md
+
+# 编辑器与系统
+.vscode
+.idea
+.DS_Store
+*.pem

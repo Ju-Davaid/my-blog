@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // 产出 standalone 产物（含最小化 node_modules），供 Docker 镜像使用
+  // 本地 `next dev` / `next start` 不受影响，部署到 Vercel 时该配置会被忽略
+  output: "standalone",
   cacheComponents: true,
   partialPrefetching: true,
   images: {

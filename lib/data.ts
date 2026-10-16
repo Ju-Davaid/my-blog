@@ -52,7 +52,8 @@ export type IconName =
   | "trash-2"
   | "smile"
   | "chevron-up"
-  | "loader";
+  | "loader"
+  | "refresh-cw";
 
 /* 内联 SVG 图标（取自 Lucide，stroke 风格） */
 export const ICONS: Record<IconName, string> = {
@@ -104,6 +105,8 @@ export const ICONS: Record<IconName, string> = {
     '<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/>',
   "chevron-up": '<path d="m18 15-6-6-6 6"/>',
   loader: '<path d="M21 12a9 9 0 1 1-6.219-8.56"/>',
+  "refresh-cw":
+    '<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 21H3v-5"/>',
 };
 
 /* ==========================================================================
@@ -119,6 +122,7 @@ export type Post = {
   readTime: string;
   tags: string[];
   pinned?: boolean;
+  cover?: string; // 可选：指定的封面图，缺省时用下面的 postCover 兜底
 };
 
 export const POSTS: Post[] = [
@@ -234,6 +238,14 @@ export const POSTS: Post[] = [
     tags: ["音乐"],
   },
 ];
+
+/**
+ * 文章封面：优先用数据里配置的 cover，
+ * 缺省时按 slug 生成确定性占位图（同一篇文章永远同一张封面）。
+ */
+export function postCover(post: Post): string {
+  return post.cover ?? `https://picsum.photos/seed/post-${post.slug}/800/500`;
+}
 
 export function getPostBySlug(slug: string): Post | null {
   return POSTS.find((p) => p.slug === slug) ?? null;

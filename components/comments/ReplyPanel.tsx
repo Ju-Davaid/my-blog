@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Avatar from "./Avatar";
-import CommentComposer from "./CommentComposer";
+import CommentComposer, { type CommentIdentity } from "./CommentComposer";
 import CommentList, { type CommentListApi } from "./CommentList";
 import { ReplyRow, type ReplyActions } from "./CommentItem";
 import { Icon } from "@/components/ui";
@@ -23,9 +23,15 @@ type ReplyPanelProps = {
   focusId?: string;
   actions: ReplyActions;
   onClose: () => void;
-  onSubmit: (content: string, replyToName?: string) => void;
+  onSubmit: (
+    content: string,
+    replyToName: string | undefined,
+    identity: CommentIdentity,
+  ) => void;
   userName: string;
   onUserNameChange: (name: string) => void;
+  userEmail: string;
+  onUserEmailChange: (email: string) => void;
 };
 
 export default function ReplyPanel({
@@ -37,6 +43,8 @@ export default function ReplyPanel({
   onSubmit,
   userName,
   onUserNameChange,
+  userEmail,
+  onUserEmailChange,
 }: ReplyPanelProps) {
   const [replyTo, setReplyTo] = useState<{ id: string; name: string } | null>(null);
   const apiRef = useRef<CommentListApi | null>(null);
@@ -171,14 +179,16 @@ export default function ReplyPanel({
           <div className="border-t border-border p-3">
             <CommentComposer
               compact
-              onSubmit={(content) => {
-                onSubmit(content, replyTo?.name);
+              onSubmit={(content, identity) => {
+                onSubmit(content, replyTo?.name, identity);
                 setReplyTo(null);
               }}
               replyTo={replyTo}
               onCancelReply={() => setReplyTo(null)}
               userName={userName}
               onUserNameChange={onUserNameChange}
+              userEmail={userEmail}
+              onUserEmailChange={onUserEmailChange}
               placeholder={
                 replyTo
                   ? "写下你的回复…"

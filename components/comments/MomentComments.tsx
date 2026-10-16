@@ -3,11 +3,14 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/ui";
 import {
+  checkCaptcha,
   estimateTotal,
   formatCount,
+  isValidEmail,
   makeMomentConfig,
   type Comment,
 } from "@/lib/comments";
+import Captcha from "./Captcha";
 import { useComments } from "./useComments";
 
 /* ==========================================================================
@@ -39,14 +42,15 @@ export default function MomentComments({
   const [page, setPage] = useState(1);
   const cfg = useMemo(() => makeMomentConfig(momentId), [momentId]);
 
-  const { ready, all, total, addComment, removeComment } = useComments(
-    `moment-${momentId}`,
-    cfg,
-    open,
-  );
+  const { ready, all, total, addComment, removeComment, userName, updateUserName, userEmail, updateUserEmail } =
+    useComments(`moment-${momentId}`, cfg, open);
 
   const [replyTo, setReplyTo] = useState<Comment | null>(null);
   const [draft, setDraft] = useState("");
+  const [captchaInput, setCaptchaInput] = useState("");
+  const [captchaCode, setCaptchaCode] = useState("");
+  const [captchaNonce, setCaptchaNonce] = useState(0);
+  const [errors, setErrors] = useState<{ name?: string; email?: string; captcha?: string }>({});
   const panelRef = useRef<HTMLDivElement | null>(null);
   const tailRef = useRef<HTMLDivElement | null>(null);
 
@@ -90,20 +94,56 @@ export default function MomentComments({
 
   const submit = useCallback(() => {
     const content = draft.trim();
+    const name = userName.trim();
+    const email = userEmail.trim();
     if (!content) return;
+
+    const next: typeof errors = {};
+    if (!name) next.name = "请填写昵称";
+    if (!email) next.email = "请填写邮箱";
+    else if (!isValidEmail(email)) next.email = "邮箱格式不正确";
+    if (!captchaInput.trim()) next.captcha = "请填写验证码";
+    else if (!checkCaptcha(captchaInput, captchaCode)) next.captcha = "验证码不正确";
+
+    setErrors(next);
+    if (Object.keys(next).length > 0) {
+      if (next.captcha) {
+        setCaptchaInput("");
+        setCaptchaNonce((n) => n + 1);
+      }
+      return;
+    }
+
     if (replyTo) {
-      addComment({ content, parentId: replyTo.id, replyToName: replyTo.author.name });
+      addComment({
+        content,
+        parentId: replyTo.id,
+        replyToName: replyTo.author.name,
+        name,
+        email,
+      });
       setReplyTo(null);
     } else {
-      addComment({ content, parentId: null });
+      addComment({ content, parentId: null, name, email });
     }
     setDraft("");
+    setCaptchaInput("");
+    setCaptchaNonce((n) => n + 1);
     // 新评论在时间正序的末尾，跳到最后一页并滚到面板底部
     setPage(Math.floor(flat.length / PAGE_SIZE) + 1);
     requestAnimationFrame(() =>
       tailRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }),
     );
-  }, [draft, replyTo, addComment, flat.length]);
+  }, [
+    draft,
+    replyTo,
+    addComment,
+    flat.length,
+    userName,
+    userEmail,
+    captchaInput,
+    captchaCode,
+  ]);
 
   return (
     <>
@@ -190,9 +230,9 @@ export default function MomentComments({
             </ul>
           )}
 
-          {/* 底部极简输入行 */}
+          {/* 底部输入区：昵称 / 邮箱 / 验证码 均为必填 */}
           {ready && (
-            <div className="mt-3 flex items-center gap-2 border-t border-border/60 pt-3">
+            <div className="mt-3 space-y-2 border-t border-border/60 pt-3">
               {replyTo && (
                 <span className="inline-flex max-w-40 items-center gap-1 truncate rounded bg-primary/10 px-2 py-1 text-[11px] text-primary">
                   回复 @{replyTo.author.name}
@@ -206,23 +246,80 @@ export default function MomentComments({
                   </button>
                 </span>
               )}
-              <input
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.nativeEvent.isComposing) submit();
-                }}
-                placeholder={replyTo ? `回复 @${replyTo.author.name}…` : "评论"}
-                className="min-w-0 flex-1 rounded-md border border-border bg-background px-3 py-1.5 text-[13px] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/50"
-              />
-              <button
-                type="button"
-                onClick={submit}
-                disabled={!draft.trim()}
-                className="cursor-pointer rounded-md bg-primary px-3 py-1.5 text-[13px] text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                发送
-              </button>
+
+              <div className="flex items-center gap-2">
+                <input
+                  value={userName}
+                  onChange={(e) => {
+                    updateUserName(e.target.value.slice(0, 16));
+                    if (errors.name) setErrors((p) => ({ ...p, name: undefined }));
+                  }}
+                  placeholder="昵称 *"
+                  aria-label="昵称"
+                  className={`w-24 rounded-md border bg-background px-2 py-1.5 text-[12px] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/50 ${
+                    errors.name ? "border-destructive/70" : "border-border"
+                  }`}
+                />
+                <input
+                  type="email"
+                  value={userEmail}
+                  onChange={(e) => {
+                    updateUserEmail(e.target.value.slice(0, 64));
+                    if (errors.email) setErrors((p) => ({ ...p, email: undefined }));
+                  }}
+                  placeholder="邮箱 *"
+                  aria-label="邮箱"
+                  className={`min-w-0 flex-1 rounded-md border bg-background px-2 py-1.5 text-[12px] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/50 ${
+                    errors.email ? "border-destructive/70" : "border-border"
+                  }`}
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  value={captchaInput}
+                  onChange={(e) => {
+                    setCaptchaInput(e.target.value.slice(0, 6));
+                    if (errors.captcha) setErrors((p) => ({ ...p, captcha: undefined }));
+                  }}
+                  placeholder="验证码 *"
+                  aria-label="验证码"
+                  className={`w-20 rounded-md border bg-background px-2 py-1.5 text-center text-[12px] tracking-widest text-foreground outline-none transition-colors placeholder:tracking-normal placeholder:text-muted-foreground focus:border-primary/50 ${
+                    errors.captcha ? "border-destructive/70" : "border-border"
+                  }`}
+                />
+                <Captcha
+                  onChange={setCaptchaCode}
+                  refreshKey={captchaNonce}
+                  compact
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.nativeEvent.isComposing) submit();
+                  }}
+                  placeholder={replyTo ? `回复 @${replyTo.author.name}…` : "评论内容 *"}
+                  className="min-w-0 flex-1 rounded-md border border-border bg-background px-3 py-1.5 text-[13px] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/50"
+                />
+                <button
+                  type="button"
+                  onClick={submit}
+                  disabled={!draft.trim()}
+                  className="cursor-pointer rounded-md bg-primary px-3 py-1.5 text-[13px] text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  发送
+                </button>
+              </div>
+
+              {(errors.name || errors.email || errors.captcha) && (
+                <p className="text-[11px] text-destructive" role="alert">
+                  {errors.name ?? errors.email ?? errors.captcha}
+                </p>
+              )}
             </div>
           )}
 

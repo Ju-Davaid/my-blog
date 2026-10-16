@@ -88,6 +88,8 @@ export default function CommentSection({
     replyCountOf,
     userName,
     updateUserName,
+    userEmail,
+    updateUserEmail,
   } = comments;
 
   const [replyTo, setReplyTo] = useState<{ id: string; name: string } | null>(null);
@@ -149,11 +151,16 @@ export default function CommentSection({
   );
 
   const handleSubmit = useCallback(
-    (content: string) => {
+    (content: string, identity: { name: string; email: string }) => {
       if (replyTo) {
-        addComment({ content, parentId: replyTo.id, replyToName: replyTo.name });
+        addComment({
+          content,
+          parentId: replyTo.id,
+          replyToName: replyTo.name,
+          ...identity,
+        });
       } else {
-        addComment({ content, parentId: null });
+        addComment({ content, parentId: null, ...identity });
       }
       setReplyTo(null);
       apiRef.current?.scrollToTop();
@@ -247,6 +254,8 @@ export default function CommentSection({
           onCancelReply={() => setReplyTo(null)}
           userName={userName}
           onUserNameChange={updateUserName}
+          userEmail={userEmail}
+          onUserEmailChange={updateUserEmail}
           placeholder="写下你的想法…"
         />
       </div>
@@ -312,12 +321,19 @@ export default function CommentSection({
         focusId={thread?.focusId}
         actions={actions}
         onClose={() => setThread(null)}
-        onSubmit={(content, replyToName) => {
+        onSubmit={(content, replyToName, identity) => {
           if (!thread) return;
-          addComment({ content, parentId: thread.rootId, replyToName });
+          addComment({
+            content,
+            parentId: thread.rootId,
+            replyToName,
+            ...identity,
+          });
         }}
         userName={userName}
         onUserNameChange={updateUserName}
+        userEmail={userEmail}
+        onUserEmailChange={updateUserEmail}
       />
     </section>
   );

@@ -18,6 +18,8 @@ RUN pnpm install --frozen-lockfile
 
 # ============================ 2. 构建 ====================================
 FROM base AS builder
+# 产出 standalone 产物（仅 Docker 镜像需要；本地 next start 不启用）
+ENV NEXT_STANDALONE=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN pnpm build

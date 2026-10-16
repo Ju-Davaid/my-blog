@@ -31,7 +31,7 @@ docker run -d --name blog -p 3000:3000 my-blog:latest   # 启动容器
 # 打开 http://localhost:3000
 ```
 
-镜像采用多阶段构建（依赖 → 构建 → 运行），运行阶段基于 `node:22-slim` + Next.js `standalone` 产物，以非 root 用户运行，并内置健康检查。
+镜像采用多阶段构建（依赖 → 构建 → 运行），运行阶段基于 `node:24.4.0-slim` + Next.js `standalone` 产物，以非 root 用户运行，并内置健康检查。`standalone` 只在 Docker 构建阶段通过 `NEXT_STANDALONE=1` 启用，本地 `pnpm dev / build / start` 不受影响。
 
 | 构建参数 / 环境变量    | 默认值       | 说明                                  |
 | ---------------------- | ------------ | ------------------------------------- |

@@ -476,10 +476,13 @@ export const localCommentStore: CommentStore = {
 };
 
 /* --------------------------------------------------------------------------
-   用户身份（本地昵称）
+   用户身份（本地昵称 + 邮箱）
    -------------------------------------------------------------------------- */
 
 const USER_KEY = "mori-cmt-user-v1";
+const EMAIL_KEY = "mori-cmt-email-v1";
+
+export type UserIdentity = { name: string; email: string };
 
 export function loadUserName(): string {
   if (typeof window === "undefined") return "";
@@ -497,6 +500,53 @@ export function saveUserName(name: string): void {
   } catch {
     /* ignore */
   }
+}
+
+export function loadUserEmail(): string {
+  if (typeof window === "undefined") return "";
+  try {
+    return window.localStorage.getItem(EMAIL_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+export function saveUserEmail(email: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(EMAIL_KEY, email);
+  } catch {
+    /* ignore */
+  }
+}
+
+/** 邮箱格式校验（宽松但能挡住明显错误：无 @、无域名点、含空格） */
+export function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(email.trim());
+}
+
+/* --------------------------------------------------------------------------
+   图形验证码
+   --------------------------------------------------------------------------
+   · 4 位字符，剔除易混字符（0/O、1/I/L 等）
+   · 答案只存内存，不进 DOM；重开组件即失效
+   -------------------------------------------------------------------------- */
+
+const CODE_CHARS = "ABCDEFGHJKMNPQRSTUVWXY23456789";
+const CODE_LEN = 4;
+export const CODE_ALPHABET = CODE_CHARS;
+
+export function createCaptchaCode(): string {
+  let out = "";
+  for (let i = 0; i < CODE_LEN; i += 1) {
+    out += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)];
+  }
+  return out;
+}
+
+/** 校验时忽略大小写与首尾空格 */
+export function checkCaptcha(input: string, code: string): boolean {
+  return input.trim().toUpperCase() === code.toUpperCase();
 }
 
 let uidSeq = 0;

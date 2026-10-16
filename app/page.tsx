@@ -1,7 +1,15 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Reveal, Icon } from "@/components/ui";
 import { PostCard } from "@/components/post";
-import { POSTS, ARCHIVE, ALL_TAGS, TAG_COUNTS, STATS } from "@/lib/data";
+import {
+  POSTS,
+  ARCHIVE,
+  ALL_TAGS,
+  TAG_COUNTS,
+  STATS,
+  postCover,
+} from "@/lib/data";
 
 export default function HomePage() {
   const pinned = POSTS.find((p) => p.pinned);
@@ -84,15 +92,17 @@ export default function HomePage() {
             className="card card-hover group block overflow-hidden"
           >
             <div className="flex flex-col gap-0 md:flex-row">
-              <div
-                className="relative flex min-h-42 items-center justify-center overflow-hidden border-b border-border md:w-2/5 md:border-b-0 md:border-r"
-                style={{
-                  background:
-                    "linear-gradient(135deg, color-mix(in oklab, var(--primary) 18%, transparent), color-mix(in oklab, var(--accent) 16%, transparent))",
-                }}
-              >
-                <div className="dot-grid absolute inset-0 opacity-60"></div>
-                <span className="relative font-serif text-5xl tracking-[0.2em] text-primary/45">
+              <div className="relative flex min-h-42 items-end justify-center overflow-hidden border-b border-border bg-muted md:w-2/5 md:border-b-0 md:border-r">
+                <Image
+                  src={postCover(pinned)}
+                  alt={pinned.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 40vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                />
+                {/* 底部渐变遮罩，保证角标在任何封面下都可读 */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent"></div>
+                <span className="relative pb-4 font-serif text-5xl tracking-[0.2em] text-white/85 drop-shadow-md">
                   01
                 </span>
               </div>

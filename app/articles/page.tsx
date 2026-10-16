@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Reveal, Icon } from "@/components/ui";
-import { POSTS } from "@/lib/data";
+import { POSTS, postCover } from "@/lib/data";
 
 const FILTERS = [
   "全部",
@@ -80,33 +81,42 @@ export default function ArticlesPage() {
         </div>
       </Reveal>
 
-      {/* 列表 */}
-      <section className="grid gap-5 md:grid-cols-2">
+      {/* 列表：紧凑多列卡片 */}
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {visible.map((p) => (
           <Link
             key={p.slug}
             href={`/posts/${p.slug}`}
-            className="card card-hover group flex flex-col p-6"
+            className="card card-hover group flex flex-col overflow-hidden"
           >
-            <div className="mb-3 flex flex-wrap gap-2">
-              {p.pinned && <span className="tag tag-accent">置顶</span>}
-              {p.tags.map((t) => (
-                <span key={t} className="tag">
-                  {t}
+            <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-border bg-muted">
+              <Image
+                src={postCover(p)}
+                alt={p.title}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+              />
+              {p.pinned && (
+                <span className="tag tag-accent absolute right-2 top-2 z-10">
+                  置顶
                 </span>
-              ))}
+              )}
             </div>
-            <h2 className="font-serif text-lg font-semibold leading-snug tracking-wide text-card-foreground transition-colors group-hover:text-primary">
-              {p.title}
-            </h2>
-            <p className="mt-2.5 line-clamp-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-              {p.excerpt}
-            </p>
-            <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-xs text-muted-foreground">
-              <span className="tabular-nums">{p.date}</span>
-              <span className="inline-flex items-center gap-1">
-                {p.readTime}
-              </span>
+
+            <div className="flex flex-1 flex-col p-4">
+              <h2 className="line-clamp-1 font-serif text-[15px] font-semibold leading-snug tracking-wide text-card-foreground transition-colors group-hover:text-primary">
+                {p.title}
+              </h2>
+              <p className="mt-1.5 line-clamp-1 text-xs leading-relaxed text-muted-foreground">
+                {p.excerpt}
+              </p>
+              <div className="mt-auto flex items-center justify-between gap-2 pt-3 text-[11px] text-muted-foreground">
+                <span className="shrink-0 tabular-nums">{p.date}</span>
+                <span className="truncate text-right">
+                  {p.tags.join(" · ")}
+                </span>
+              </div>
             </div>
           </Link>
         ))}

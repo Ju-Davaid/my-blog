@@ -4,8 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   compareRoot,
   createCommentId,
-  localCommentStore,
+  loadUserEmail,
   loadUserName,
+  localCommentStore,
+  saveUserEmail,
   saveUserName,
   type Comment,
   type CommentAuthor,
@@ -27,6 +29,10 @@ export type CommentInput = {
   /** null 表示发顶层评论 */
   parentId: string | null;
   replyToName?: string;
+  /** 提交时填写的昵称，缺省回退到状态中的昵称 */
+  name?: string;
+  /** 提交时填写的邮箱（本地留档，不写入展示内容） */
+  email?: string;
 };
 
 export function useComments(contentId: string, cfg: SeedConfig, enabled: boolean) {
@@ -35,6 +41,7 @@ export function useComments(contentId: string, cfg: SeedConfig, enabled: boolean
   const [sort, setSort] = useState<SortMode>("hot");
   // 评论区只在浏览器中挂载（折叠/进入视口后才渲染），因此可以直接读本地身份
   const [userName, setUserName] = useState(() => loadUserName());
+  const [userEmail, setUserEmail] = useState(() => loadUserEmail());
   const overridesRef = useRef<CommentOverrides | null>(null);
 
   /* ---------- 加载 ---------- */
@@ -107,6 +114,7 @@ export function useComments(contentId: string, cfg: SeedConfig, enabled: boolean
   const addComment = useCallback(
     (input: CommentInput): Comment => {
       const content = input.content.trim();
+      const name = input.name?.trim() || userName.trim() || "我";
       const id = createCommentId();
       // 扁平线程：回复「某条回复」时仍归属同一个顶层线程，靠 replyToName 表达 @
       const target = input.parentId ? byId.get(input.parentId) : null;
@@ -114,7 +122,7 @@ export function useComments(contentId: string, cfg: SeedConfig, enabled: boolean
         id,
         parentId: target ? target.rootId : null,
         rootId: target ? target.rootId : id,
-        author,
+        author: { ...author, name, badge: name === "我" ? undefined : "我" },
         content,
         createdAt: Date.now(),
         likes: 0,
@@ -131,7 +139,7 @@ export function useComments(contentId: string, cfg: SeedConfig, enabled: boolean
       }
       return c;
     },
-    [author, byId, persist],
+    [author, byId, persist, userName],
   );
 
   const toggleLike = useCallback(
@@ -174,6 +182,11 @@ export function useComments(contentId: string, cfg: SeedConfig, enabled: boolean
     saveUserName(name);
   }, []);
 
+  const updateUserEmail = useCallback((email: string) => {
+    setUserEmail(email);
+    saveUserEmail(email);
+  }, []);
+
   const replyCountOf = useCallback(
     (rootId: string) => repliesByRoot.get(rootId)?.length ?? 0,
     [repliesByRoot],
@@ -195,5 +208,7 @@ export function useComments(contentId: string, cfg: SeedConfig, enabled: boolean
     replyCountOf,
     userName,
     updateUserName,
+    userEmail,
+    updateUserEmail,
   };
 }

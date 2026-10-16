@@ -1,9 +1,11 @@
 import type { NextConfig } from "next";
 
+// 仅在 Docker 构建时（NEXT_STANDALONE=1）产出 standalone 产物，
+// 否则本地 `next start` 会因 standalone 配置不可用。
+const standalone = process.env.NEXT_STANDALONE === "1";
+
 const nextConfig: NextConfig = {
-  // 产出 standalone 产物（含最小化 node_modules），供 Docker 镜像使用
-  // 本地 `next dev` / `next start` 不受影响，部署到 Vercel 时该配置会被忽略
-  output: "standalone",
+  output: standalone ? "standalone" : undefined,
   cacheComponents: true,
   partialPrefetching: true,
   images: {

@@ -1,7 +1,7 @@
 import SiteHeader from "./SiteHeader";
 import Footer from "./Footer";
 import MobileNav from "./MobileNav";
-import { LightboxProvider } from "./Lightbox";
+import { LightboxProvider } from "@/components/media";
 
 /**
  * 全站布局骨架：点阵背景 + 吸顶导航 + 内容 + 页脚 + 移动端底部导航。

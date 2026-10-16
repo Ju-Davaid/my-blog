@@ -1,5 +1,5 @@
 import { SITE } from "@/lib/data";
-import Icon from "./Icon";
+import { Icon } from "@/components/ui";
 
 /**
  * 页脚：品牌、版权与社交链接。

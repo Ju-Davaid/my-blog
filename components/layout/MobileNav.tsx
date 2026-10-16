@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SITE, type IconName } from "@/lib/data";
-import Icon from "./Icon";
+import { Icon } from "@/components/ui";
 
 /**
  * 移动端底部胶囊导航。

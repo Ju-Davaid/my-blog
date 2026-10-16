@@ -6,7 +6,7 @@ import Avatar from "./Avatar";
 import CommentComposer from "./CommentComposer";
 import CommentList, { type CommentListApi } from "./CommentList";
 import { ReplyRow, type ReplyActions } from "./CommentItem";
-import Icon from "@/components/Icon";
+import { Icon } from "@/components/ui";
 import { formatCount, formatTime, type Comment } from "@/lib/comments";
 
 /* ==========================================================================

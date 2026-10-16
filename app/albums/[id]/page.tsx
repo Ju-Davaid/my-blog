@@ -1,9 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import Reveal from "@/components/Reveal";
-import PhotoGrid from "@/components/PhotoGrid";
-import Icon from "@/components/Icon";
+import { Reveal, Icon } from "@/components/ui";
+import { PhotoGrid } from "@/components/media";
 import { ALBUMS, buildPhotos, getAlbum } from "@/lib/data";
 
 export function generateStaticParams() {

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Reveal from "@/components/Reveal";
-import PhotoGrid from "@/components/PhotoGrid";
+import { Reveal } from "@/components/ui";
+import { PhotoGrid } from "@/components/media";
 import { ALBUMS, FEATURED_PHOTOS } from "@/lib/data";
 
 export default function AlbumsPage() {

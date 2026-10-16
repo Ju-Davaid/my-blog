@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Post } from "@/lib/data";
-import Icon from "./Icon";
+import { Icon } from "@/components/ui";
 
 /**
  * 文章卡片：标题、摘要、标签、日期与阅读时长。

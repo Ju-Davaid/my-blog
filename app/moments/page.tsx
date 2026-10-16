@@ -1,6 +1,6 @@
-import Reveal from "@/components/Reveal";
-import PhotoGrid from "@/components/PhotoGrid";
-import MomentComments from "@/components/comments/MomentComments";
+import { Reveal } from "@/components/ui";
+import { PhotoGrid } from "@/components/media";
+import { MomentComments } from "@/components/comments";
 import { MOMENTS, MOMENT_TIMELINE } from "@/lib/data";
 import Image from "next/image";
 

@@ -1,7 +1,6 @@
 import Link from "next/link";
-import Reveal from "@/components/Reveal";
-import PostCard from "@/components/PostCard";
-import Icon from "@/components/Icon";
+import { Reveal, Icon } from "@/components/ui";
+import { PostCard } from "@/components/post";
 import { POSTS, ARCHIVE, ALL_TAGS, TAG_COUNTS, STATS } from "@/lib/data";
 
 export default function HomePage() {

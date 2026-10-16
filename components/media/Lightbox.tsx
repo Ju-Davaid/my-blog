@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import Icon from "./Icon";
+import { Icon } from "@/components/ui";
 import Image from "next/image";
 
 type LightboxItem = { src: string; caption?: string };

@@ -2,7 +2,7 @@
 
 import { memo, useState } from "react";
 import Avatar from "./Avatar";
-import Icon from "@/components/Icon";
+import { Icon } from "@/components/ui";
 import {
   formatCount,
   formatTime,

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import CommentSection from "./CommentSection";
-import Icon from "@/components/Icon";
+import { Icon } from "@/components/ui";
 import { formatCount, makeMomentConfig } from "@/lib/comments";
 
 /* ==========================================================================

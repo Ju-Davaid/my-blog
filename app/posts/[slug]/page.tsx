@@ -1,11 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Reveal from "@/components/Reveal";
-import ReadingProgress from "@/components/ReadingProgress";
-import Icon from "@/components/Icon";
-import CommentSection from "@/components/comments/CommentSection";
-import LazyMount from "@/components/comments/LazyMount";
+import { Icon } from "@/components/ui";
+import { ReadingProgress } from "@/components/post";
+import { CommentSection, LazyMount } from "@/components/comments";
 import { getPostBySlug, POSTS } from "@/lib/data";
 
 export function generateStaticParams() {

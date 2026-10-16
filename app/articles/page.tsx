@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Reveal from "@/components/Reveal";
-import Icon from "@/components/Icon";
+import { Reveal, Icon } from "@/components/ui";
 import { POSTS } from "@/lib/data";
 
 const FILTERS = ["全部", "编程", "前端", "后端", "数据库", "AI", "摄影", "音乐", "生活", "随笔"];

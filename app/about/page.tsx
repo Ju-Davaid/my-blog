@@ -1,5 +1,4 @@
-import Reveal from "@/components/Reveal";
-import Icon from "@/components/Icon";
+import { Reveal, Icon } from "@/components/ui";
 import { STATS } from "@/lib/data";
 import Image from "next/image";
 

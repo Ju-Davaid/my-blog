@@ -5,7 +5,7 @@ import CommentComposer from "./CommentComposer";
 import CommentItem, { type CommentActions } from "./CommentItem";
 import CommentList, { type CommentListApi } from "./CommentList";
 import ReplyPanel from "./ReplyPanel";
-import Icon from "@/components/Icon";
+import { Icon } from "@/components/ui";
 import {
   SEED_PRESETS,
   estimateTotal,

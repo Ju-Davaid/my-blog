@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Sans_SC, Noto_Serif_SC } from "next/font/google";
-import SiteShell from "@/components/SiteShell";
+import { SiteShell } from "@/components/layout";
 import "./globals.css";
 
 const notoSans = Noto_Sans_SC({

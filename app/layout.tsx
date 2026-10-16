@@ -17,12 +17,28 @@ const notoSerif = Noto_Serif_SC({
   display: "swap",
 });
 
+// 全局元数据
 export const metadata: Metadata = {
   title: {
-    default: "DAVAID BLOG · 用镜头和文字记录生活的温度",
-    template: "%s · DAVAID BLOG",
+    default: "DAVAID BLOG",
+    template: "DAVAID BLOG - %s",
   },
-  description: "DAVAID的个人博客 —— 编程、摄影、音乐与生活的记录。",
+  description: "DAVAID的个人博客 —— 编程、工作、日常与生活的记录。",
+  applicationName: "DAVAID BLOG",
+  keywords: [
+    "Davaid.Ju",
+    "Davaid.Ju个人博客",
+    "DAVAID",
+    "DAVAID个人博客",
+    "davaid",
+    "davaid个人博客",
+    "Davaid",
+    "Davaid个人博客",
+    "鞠先锋",
+    "鞠先峰",
+    "编程",
+    "code",
+  ],
 };
 
 /* 主题防闪烁脚本：在首帧渲染前确定 light / dark / system 并写入 <html> */

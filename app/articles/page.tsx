@@ -1,11 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Reveal, Icon } from "@/components/ui";
 import { POSTS } from "@/lib/data";
 
-const FILTERS = ["全部", "编程", "前端", "后端", "数据库", "AI", "摄影", "音乐", "生活", "随笔"];
+const FILTERS = [
+  "全部",
+  "编程",
+  "前端",
+  "后端",
+  "数据库",
+  "AI",
+  "摄影",
+  "音乐",
+  "生活",
+  "随笔",
+];
 
 export default function ArticlesPage() {
   const [query, setQuery] = useState("");
@@ -15,20 +26,26 @@ export default function ArticlesPage() {
   const visible = POSTS.filter((p) => {
     const matchFilter = filter === "全部" || p.tags.includes(filter);
     const matchQuery =
-      q === "" ||
-      (p.title + " " + p.tags.join(" ")).toLowerCase().includes(q);
+      q === "" || (p.title + " " + p.tags.join(" ")).toLowerCase().includes(q);
     return matchFilter && matchQuery;
   });
+
+  useEffect(() => {
+    document.title = "DAVAID BLOG - 文章";
+  }, []);
 
   return (
     <>
       <Reveal className="pt-12 pb-8 md:pt-16">
-        <p className="mb-3 text-[11px] tracking-[0.2em] text-muted-foreground">ARTICLES</p>
+        <p className="mb-3 text-[11px] tracking-[0.2em] text-muted-foreground">
+          ARTICLES
+        </p>
         <h1 className="font-serif text-3xl font-semibold tracking-wide text-foreground md:text-4xl">
           全部文章
         </h1>
         <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-          共 <span className="tabular-nums text-foreground">72</span> 篇。按时间倒序排列，支持关键词搜索与标签筛选。
+          共 <span className="tabular-nums text-foreground">72</span>{" "}
+          篇。按时间倒序排列，支持关键词搜索与标签筛选。
         </p>
       </Reveal>
 
@@ -87,7 +104,9 @@ export default function ArticlesPage() {
             </p>
             <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-xs text-muted-foreground">
               <span className="tabular-nums">{p.date}</span>
-              <span className="inline-flex items-center gap-1">{p.readTime}</span>
+              <span className="inline-flex items-center gap-1">
+                {p.readTime}
+              </span>
             </div>
           </Link>
         ))}
@@ -96,7 +115,9 @@ export default function ArticlesPage() {
       {/* 空状态 */}
       {visible.length === 0 && (
         <div className="py-20 text-center">
-          <p className="font-serif text-lg text-muted-foreground">没有找到匹配的文章</p>
+          <p className="font-serif text-lg text-muted-foreground">
+            没有找到匹配的文章
+          </p>
           <p className="mt-2 text-sm text-muted-foreground/80">
             试试换个关键词，或点击「全部」重置筛选。
           </p>

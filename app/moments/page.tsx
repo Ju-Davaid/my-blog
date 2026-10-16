@@ -3,6 +3,11 @@ import { PhotoGrid } from "@/components/media";
 import { MomentComments } from "@/components/comments";
 import { MOMENTS, MOMENT_TIMELINE } from "@/lib/data";
 import Image from "next/image";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "动态",
+};
 
 /**
  * 动态页面

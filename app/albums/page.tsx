@@ -2,6 +2,11 @@ import Link from "next/link";
 import { Reveal } from "@/components/ui";
 import { PhotoGrid } from "@/components/media";
 import { ALBUMS, FEATURED_PHOTOS } from "@/lib/data";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "相册",
+};
 
 export default function AlbumsPage() {
   const totalPhotos = ALBUMS.reduce((s, a) => s + a.count, 0);

@@ -1,6 +1,11 @@
 import { Reveal, Icon } from "@/components/ui";
 import { STATS } from "@/lib/data";
 import Image from "next/image";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "关于",
+};
 
 const TOOLBOX = [
   {

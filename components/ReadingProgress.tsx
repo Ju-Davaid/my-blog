@@ -24,7 +24,7 @@ export default function ReadingProgress() {
   }, []);
 
   return (
-    <div className="fixed left-0 top-[50px] z-50 h-[2px] w-full bg-transparent">
+    <div className="fixed left-0 top-12.5 z-50 h-0.5 w-full bg-transparent">
       <div ref={barRef} className="h-full bg-primary" style={{ width: 0 }} />
     </div>
   );

@@ -575,6 +575,78 @@
   .mom-grid img:hover { filter: brightness(1.08); }
   .mom-grid.n1 img { aspect-ratio: 16 / 10; border-radius: 6px; }
   .mom-grid.n2 img, .mom-grid.n4 img { aspect-ratio: 4 / 3; }
+
+  /* 评论区 —— 虚拟滚动容器 */
+  .cmt-scroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* 虚拟滚动行：绝对定位由内联 style 给出 top，此处只管左右 */
+  .cmt-row {
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+  /* 抽屉里定位到某条评论时的高亮 */
+  .cmt-flash {
+    animation: cmt-flash 1.8s ease-out both;
+  }
+  /* 骨架屏 */
+  .cmt-skel {
+    background: linear-gradient(
+      90deg,
+      var(--muted) 25%,
+      color-mix(in oklab, var(--muted) 45%, var(--card)) 37%,
+      var(--muted) 63%
+    );
+    background-size: 400% 100%;
+    animation: cmt-shimmer 1.4s ease infinite;
+  }
+  /* 子评论抽屉 */
+  .cmt-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    background-color: color-mix(in oklab, #0a0d12 58%, transparent);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    animation: cmt-fade 0.2s ease both;
+  }
+  .cmt-sheet {
+    animation: cmt-sheet-in 0.3s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  }
+  .cmt-like-pop {
+    animation: cmt-pop 0.34s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+}
+
+@keyframes cmt-shimmer {
+  from { background-position: 100% 50%; }
+  to { background-position: 0 50%; }
+}
+@keyframes cmt-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes cmt-sheet-in {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes cmt-flash {
+  0% { background-color: color-mix(in oklab, var(--primary) 22%, transparent); }
+  100% { background-color: transparent; }
+}
+@keyframes cmt-pop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cmt-sheet, .cmt-overlay, .cmt-flash, .cmt-like-pop { animation: none; }
+  .cmt-skel { animation: none; }
 }
 
 /* ==========================================================================

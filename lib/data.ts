@@ -3,8 +3,8 @@
    ========================================================================== */
 
 export const SITE = {
-  brand: "DAVID BLOG",
-  author: "David",
+  brand: "DAVAID BLOG",
+  author: "DAVAID",
   nav: [
     { label: "首页", href: "/", icon: "house" },
     { label: "文章", href: "/articles", icon: "file-text" },
@@ -43,7 +43,16 @@ export type IconName =
   | "rss"
   | "search"
   | "zoom-in"
-  | "heart";
+  | "heart"
+  | "message-circle"
+  | "send"
+  | "corner-down-right"
+  | "thumbs-up"
+  | "flame"
+  | "trash-2"
+  | "smile"
+  | "chevron-up"
+  | "loader";
 
 /* 内联 SVG 图标（取自 Lucide，stroke 风格） */
 export const ICONS: Record<IconName, string> = {
@@ -80,6 +89,21 @@ export const ICONS: Record<IconName, string> = {
     '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/>',
   heart:
     '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+  "message-circle":
+    '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  send: '<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  "corner-down-right":
+    '<path d="m15 10 5 5-5 5"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/>',
+  "thumbs-up":
+    '<path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/>',
+  flame:
+    '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+  "trash-2":
+    '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/>',
+  smile:
+    '<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/>',
+  "chevron-up": '<path d="m18 15-6-6-6 6"/>',
+  loader: '<path d="M21 12a9 9 0 1 1-6.219-8.56"/>',
 };
 
 /* ==========================================================================
@@ -122,7 +146,8 @@ export const POSTS: Post[] = [
   {
     slug: "minimal-virtual-scroll",
     title: "从零实现一个极简虚拟滚动",
-    excerpt: "十万条数据，DOM 里只留二十个节点。核心不过是三行数学：起始索引、偏移量、可视高度。",
+    excerpt:
+      "十万条数据，DOM 里只留二十个节点。核心不过是三行数学：起始索引、偏移量、可视高度。",
     date: "2026-09-21",
     dateLabel: "9/21",
     readTime: "10 分钟",
@@ -141,7 +166,8 @@ export const POSTS: Post[] = [
   {
     slug: "music-theory-dlc02",
     title: "乐理基础 DLC02 · 调内和弦",
-    excerpt: "大调七个音，各自往上叠两个三度，得到七个和弦。记住级数，比记住名字有用得多。",
+    excerpt:
+      "大调七个音，各自往上叠两个三度，得到七个和弦。记住级数，比记住名字有用得多。",
     date: "2026-09-07",
     dateLabel: "9/07",
     readTime: "7 分钟",
@@ -160,7 +186,8 @@ export const POSTS: Post[] = [
   {
     slug: "comic-con-notes",
     title: "漫展随记",
-    excerpt: "一天走了两万步，电池耗掉三块，回来修图修到凌晨。但那一张逆光里的侧脸，值得。",
+    excerpt:
+      "一天走了两万步，电池耗掉三块，回来修图修到凌晨。但那一张逆光里的侧脸，值得。",
     date: "2026-07-28",
     dateLabel: "7/28",
     readTime: "5 分钟",
@@ -169,7 +196,8 @@ export const POSTS: Post[] = [
   {
     slug: "portrait-planning",
     title: "人像拍摄前期策划方案",
-    excerpt: "场地、服装、色温、镜头语言——把能提前定的都定下来，现场才有余力应付意外。",
+    excerpt:
+      "场地、服装、色温、镜头语言——把能提前定的都定下来，现场才有余力应付意外。",
     date: "2026-07-22",
     dateLabel: "7/22",
     readTime: "9 分钟",
@@ -178,7 +206,8 @@ export const POSTS: Post[] = [
   {
     slug: "sharding-smooth",
     title: "分表如何保证丝滑？—— 从「纯新增」聊到大厂主流方案",
-    excerpt: "分表本身不难，难的是分完之后那些绕不开的问题：扩容、路由、以及凌晨两点的那条慢查询。",
+    excerpt:
+      "分表本身不难，难的是分完之后那些绕不开的问题：扩容、路由、以及凌晨两点的那条慢查询。",
     date: "2026-07-22",
     dateLabel: "7/22",
     readTime: "18 分钟",
@@ -187,7 +216,8 @@ export const POSTS: Post[] = [
   {
     slug: "hexo-to-nextjs",
     title: "把博客从 Hexo 迁到了 Next.js",
-    excerpt: "理由很简单：我想要一个能写交互的地方。静态站点很好，但有些想法需要跑起来才说得清。",
+    excerpt:
+      "理由很简单：我想要一个能写交互的地方。静态站点很好，但有些想法需要跑起来才说得清。",
     date: "2026-06-18",
     dateLabel: "6/18",
     readTime: "11 分钟",
@@ -238,7 +268,11 @@ export const ARCHIVE: ArchiveGroup[] = [
     yearMonth: "2026-10",
     label: "2026 年 10 月",
     items: [
-      { dateLabel: "10/12", title: "用 Tailwind CSS 复刻一套设计系统", slug: "tailwind-design-system" },
+      {
+        dateLabel: "10/12",
+        title: "用 Tailwind CSS 复刻一套设计系统",
+        slug: "tailwind-design-system",
+      },
       { dateLabel: "10/08", title: "我的博客被攻击了", slug: "blog-attacked" },
     ],
   },
@@ -246,44 +280,104 @@ export const ARCHIVE: ArchiveGroup[] = [
     yearMonth: "2026-09",
     label: "2026 年 9 月",
     items: [
-      { dateLabel: "9/21", title: "从零实现一个极简虚拟滚动", slug: "minimal-virtual-scroll" },
-      { dateLabel: "9/07", title: "《摄影构图学》——随笔", slug: "photography-composition" },
-      { dateLabel: "9/07", title: "乐理基础 DLC02 · 调内和弦", slug: "music-theory-dlc02" },
+      {
+        dateLabel: "9/21",
+        title: "从零实现一个极简虚拟滚动",
+        slug: "minimal-virtual-scroll",
+      },
+      {
+        dateLabel: "9/07",
+        title: "《摄影构图学》——随笔",
+        slug: "photography-composition",
+      },
+      {
+        dateLabel: "9/07",
+        title: "乐理基础 DLC02 · 调内和弦",
+        slug: "music-theory-dlc02",
+      },
     ],
   },
   {
     yearMonth: "2026-08",
     label: "2026 年 8 月",
-    items: [{ dateLabel: "8/26", title: "抽空做了个导航起始页", slug: "hexo-to-nextjs" }],
+    items: [
+      {
+        dateLabel: "8/26",
+        title: "抽空做了个导航起始页",
+        slug: "hexo-to-nextjs",
+      },
+    ],
   },
   {
     yearMonth: "2026-07",
     label: "2026 年 7 月",
     items: [
-      { dateLabel: "7/29", title: "Agent 与大模型开发理论 · 第一部分", slug: "agent-theory-part1" },
+      {
+        dateLabel: "7/29",
+        title: "Agent 与大模型开发理论 · 第一部分",
+        slug: "agent-theory-part1",
+      },
       { dateLabel: "7/28", title: "漫展随记", slug: "comic-con-notes" },
-      { dateLabel: "7/22", title: "人像拍摄前期策划方案", slug: "portrait-planning" },
-      { dateLabel: "7/22", title: "分表如何保证丝滑？—— 从「纯新增」聊到大厂主流方案", slug: "sharding-smooth" },
+      {
+        dateLabel: "7/22",
+        title: "人像拍摄前期策划方案",
+        slug: "portrait-planning",
+      },
+      {
+        dateLabel: "7/22",
+        title: "分表如何保证丝滑？—— 从「纯新增」聊到大厂主流方案",
+        slug: "sharding-smooth",
+      },
     ],
   },
   {
     yearMonth: "2026-06",
     label: "2026 年 6 月",
     items: [
-      { dateLabel: "6/18", title: "把博客从 Hexo 迁到了 Next.js", slug: "hexo-to-nextjs" },
-      { dateLabel: "6/05", title: "乐理基础 DLC01 · 音程与和弦", slug: "music-theory-dlc01" },
+      {
+        dateLabel: "6/18",
+        title: "把博客从 Hexo 迁到了 Next.js",
+        slug: "hexo-to-nextjs",
+      },
+      {
+        dateLabel: "6/05",
+        title: "乐理基础 DLC01 · 音程与和弦",
+        slug: "music-theory-dlc01",
+      },
     ],
   },
 ];
 
 export const ALL_TAGS = [
-  "编程", "前端", "后端", "数据库", "运维", "AI",
-  "摄影", "音乐", "读书", "生活", "随笔", "性能", "CSS",
+  "编程",
+  "前端",
+  "后端",
+  "数据库",
+  "运维",
+  "AI",
+  "摄影",
+  "音乐",
+  "读书",
+  "生活",
+  "随笔",
+  "性能",
+  "CSS",
 ];
 
 export const TAG_COUNTS: Record<string, number> = {
-  编程: 4, 前端: 9, 后端: 7, 数据库: 5, 运维: 3, AI: 8,
-  摄影: 12, 音乐: 6, 读书: 4, 生活: 11, 随笔: 7, 性能: 3, CSS: 5,
+  编程: 4,
+  前端: 9,
+  后端: 7,
+  数据库: 5,
+  运维: 3,
+  AI: 8,
+  摄影: 12,
+  音乐: 6,
+  读书: 4,
+  生活: 11,
+  随笔: 7,
+  性能: 3,
+  CSS: 5,
 };
 
 /* ==========================================================================
@@ -335,14 +429,37 @@ export const ALBUMS: Album[] = [
 ];
 
 const PHOTO_RATIOS: [number, number][] = [
-  [800, 1100], [800, 800], [800, 1000], [800, 900],
-  [800, 1150], [800, 850], [800, 1050], [800, 780],
+  [800, 1100],
+  [800, 800],
+  [800, 1000],
+  [800, 900],
+  [800, 1150],
+  [800, 850],
+  [800, 1050],
+  [800, 780],
 ];
 
 const CAPTION_POOL = [
-  "晨雾", "窗口", "午后", "街角", "天台", "逆光", "雨后", "夜灯",
-  "归途", "檐下", "空椅子", "影子", "慢门", "长焦", "手持", "扫街",
-  "站台", "巷口", "白墙", "涟漪",
+  "晨雾",
+  "窗口",
+  "午后",
+  "街角",
+  "天台",
+  "逆光",
+  "雨后",
+  "夜灯",
+  "归途",
+  "檐下",
+  "空椅子",
+  "影子",
+  "慢门",
+  "长焦",
+  "手持",
+  "扫街",
+  "站台",
+  "巷口",
+  "白墙",
+  "涟漪",
 ];
 
 export type Photo = {
@@ -372,14 +489,46 @@ export function getAlbum(id: string): Album | null {
 
 /* 精选照片（相册页瀑布流） */
 export const FEATURED_PHOTOS: Photo[] = [
-  { thumb: "https://picsum.photos/seed/mori-p1/800/1100", full: "https://picsum.photos/seed/mori-p1/1600/2200", caption: "晨雾" },
-  { thumb: "https://picsum.photos/seed/mori-p2/800/800", full: "https://picsum.photos/seed/mori-p2/1600/1600", caption: "窗口" },
-  { thumb: "https://picsum.photos/seed/mori-p3/800/1000", full: "https://picsum.photos/seed/mori-p3/1600/2000", caption: "午后" },
-  { thumb: "https://picsum.photos/seed/mori-p4/800/900", full: "https://picsum.photos/seed/mori-p4/1600/1800", caption: "街角" },
-  { thumb: "https://picsum.photos/seed/mori-p5/800/1150", full: "https://picsum.photos/seed/mori-p5/1600/2300", caption: "天台" },
-  { thumb: "https://picsum.photos/seed/mori-p6/800/850", full: "https://picsum.photos/seed/mori-p6/1600/1700", caption: "逆光" },
-  { thumb: "https://picsum.photos/seed/mori-p7/800/1050", full: "https://picsum.photos/seed/mori-p7/1600/2100", caption: "雨后" },
-  { thumb: "https://picsum.photos/seed/mori-p8/800/780", full: "https://picsum.photos/seed/mori-p8/1600/1560", caption: "夜灯" },
+  {
+    thumb: "https://picsum.photos/seed/mori-p1/800/1100",
+    full: "https://picsum.photos/seed/mori-p1/1600/2200",
+    caption: "晨雾",
+  },
+  {
+    thumb: "https://picsum.photos/seed/mori-p2/800/800",
+    full: "https://picsum.photos/seed/mori-p2/1600/1600",
+    caption: "窗口",
+  },
+  {
+    thumb: "https://picsum.photos/seed/mori-p3/800/1000",
+    full: "https://picsum.photos/seed/mori-p3/1600/2000",
+    caption: "午后",
+  },
+  {
+    thumb: "https://picsum.photos/seed/mori-p4/800/900",
+    full: "https://picsum.photos/seed/mori-p4/1600/1800",
+    caption: "街角",
+  },
+  {
+    thumb: "https://picsum.photos/seed/mori-p5/800/1150",
+    full: "https://picsum.photos/seed/mori-p5/1600/2300",
+    caption: "天台",
+  },
+  {
+    thumb: "https://picsum.photos/seed/mori-p6/800/850",
+    full: "https://picsum.photos/seed/mori-p6/1600/1700",
+    caption: "逆光",
+  },
+  {
+    thumb: "https://picsum.photos/seed/mori-p7/800/1050",
+    full: "https://picsum.photos/seed/mori-p7/1600/2100",
+    caption: "雨后",
+  },
+  {
+    thumb: "https://picsum.photos/seed/mori-p8/800/780",
+    full: "https://picsum.photos/seed/mori-p8/1600/1560",
+    caption: "夜灯",
+  },
 ];
 
 /* ==========================================================================
@@ -403,9 +552,21 @@ export const MOMENTS: Moment[] = [
     text: "昨天天气 Cool 到了，其实之前就筹备一个多月了，感觉业余时间没有那么多。三心二意的，也学不好，但是这一套带着音响 1k，每天接着玩玩，到时间吃饭就吃饭吧。其实是最近又回去刷了几遍孤独特训（少女乐队 Espoir 一样 - 人不凌）——配信记到 65，手头这款也够用了。",
     likes: 0,
     photos: [
-      { thumb: "https://picsum.photos/seed/mori-m1/400/400", full: "https://picsum.photos/seed/mori-m1/1200/1200", caption: "随手拍" },
-      { thumb: "https://picsum.photos/seed/mori-m2/400/400", full: "https://picsum.photos/seed/mori-m2/1200/1200", caption: "街角" },
-      { thumb: "https://picsum.photos/seed/mori-m3/400/400", full: "https://picsum.photos/seed/mori-m3/1200/1200", caption: "午后" },
+      {
+        thumb: "https://picsum.photos/seed/mori-m1/400/400",
+        full: "https://picsum.photos/seed/mori-m1/1200/1200",
+        caption: "随手拍",
+      },
+      {
+        thumb: "https://picsum.photos/seed/mori-m2/400/400",
+        full: "https://picsum.photos/seed/mori-m2/1200/1200",
+        caption: "街角",
+      },
+      {
+        thumb: "https://picsum.photos/seed/mori-m3/400/400",
+        full: "https://picsum.photos/seed/mori-m3/1200/1200",
+        caption: "午后",
+      },
     ],
   },
   {
@@ -422,7 +583,11 @@ export const MOMENTS: Moment[] = [
     text: "下午的光从窗帘缝里漏进来，正好落在桌角那本没翻开过的书上。拍下来了，当作今天的封面。",
     likes: 5,
     photos: [
-      { thumb: "https://picsum.photos/seed/mori-m4/800/500", full: "https://picsum.photos/seed/mori-m4/1600/1000", caption: "窗帘与光" },
+      {
+        thumb: "https://picsum.photos/seed/mori-m4/800/500",
+        full: "https://picsum.photos/seed/mori-m4/1600/1000",
+        caption: "窗帘与光",
+      },
     ],
   },
   {
@@ -439,10 +604,26 @@ export const MOMENTS: Moment[] = [
     text: "练了两个小时《钟》，右手还是会在第 42 小节打滑。决定先放两天，回来再弹可能就顺了。有些卡顿不是练得不够，是太想一下子练好。",
     likes: 1,
     photos: [
-      { thumb: "https://picsum.photos/seed/mori-m5/500/375", full: "https://picsum.photos/seed/mori-m5/1200/900", caption: "琴房" },
-      { thumb: "https://picsum.photos/seed/mori-m6/500/375", full: "https://picsum.photos/seed/mori-m6/1200/900", caption: "谱子" },
-      { thumb: "https://picsum.photos/seed/mori-m7/500/375", full: "https://picsum.photos/seed/mori-m7/1200/900", caption: "夜" },
-      { thumb: "https://picsum.photos/seed/mori-m8/500/375", full: "https://picsum.photos/seed/mori-m8/1200/900", caption: "台灯" },
+      {
+        thumb: "https://picsum.photos/seed/mori-m5/500/375",
+        full: "https://picsum.photos/seed/mori-m5/1200/900",
+        caption: "琴房",
+      },
+      {
+        thumb: "https://picsum.photos/seed/mori-m6/500/375",
+        full: "https://picsum.photos/seed/mori-m6/1200/900",
+        caption: "谱子",
+      },
+      {
+        thumb: "https://picsum.photos/seed/mori-m7/500/375",
+        full: "https://picsum.photos/seed/mori-m7/1200/900",
+        caption: "夜",
+      },
+      {
+        thumb: "https://picsum.photos/seed/mori-m8/500/375",
+        full: "https://picsum.photos/seed/mori-m8/1200/900",
+        caption: "台灯",
+      },
     ],
   },
   {

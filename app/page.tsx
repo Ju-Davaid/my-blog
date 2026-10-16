@@ -18,7 +18,7 @@ export default function HomePage() {
         </p>
 
         <h1 className="font-serif text-4xl font-semibold leading-tight tracking-wide text-foreground text-balance md:text-6xl">
-          David的个人博客
+          DAVAID的个人博客
         </h1>
 
         <blockquote className="mt-6 max-w-2xl border-l-2 border-primary/50 pl-4 font-serif text-base leading-relaxed text-muted-foreground md:text-lg">
@@ -196,7 +196,7 @@ export default function HomePage() {
                   {group.label}
                 </span>
               </div>
-              <div className="ml-[28px] mt-2 space-y-1.5">
+              <div className="ml-7 mt-2 space-y-1.5">
                 {group.items.map((item, i) => (
                   <Link
                     key={i}

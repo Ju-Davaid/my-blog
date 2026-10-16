@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import Icon from "./Icon";
+import Image from "next/image";
 
 type LightboxItem = { src: string; caption?: string };
 
@@ -39,7 +40,7 @@ export function LightboxProvider({ children }: { children: React.ReactNode }) {
       // 短暂闪烁后恢复，模拟预加载切换
       window.setTimeout(() => setSwapping(false), 180);
     },
-    [items.length]
+    [items.length],
   );
 
   const open = useCallback((list: LightboxItem[], i = 0) => {
@@ -118,8 +119,10 @@ export function LightboxProvider({ children }: { children: React.ReactNode }) {
         </button>
 
         {current && (
-          <img
+          <Image
             src={current.src}
+            width={1200}
+            height={1200}
             alt={current.caption ?? ""}
             className={swapping ? "is-swapping" : ""}
           />

@@ -1,9 +1,13 @@
 import Reveal from "@/components/Reveal";
 import Icon from "@/components/Icon";
 import { STATS } from "@/lib/data";
+import Image from "next/image";
 
 const TOOLBOX = [
-  { title: "语言与框架", tags: ["TypeScript", "Go", "Java", "Python", "React", "Next.js"] },
+  {
+    title: "语言与框架",
+    tags: ["TypeScript", "Go", "Java", "Python", "React", "Next.js"],
+  },
   { title: "数据与中间件", tags: ["MySQL", "Redis", "Kafka", "Elasticsearch"] },
   { title: "工程与运维", tags: ["Docker", "Kubernetes", "Nginx", "CI/CD"] },
   { title: "除此之外", tags: ["摄影", "钢琴", "乐理", "阅读"], accent: true },
@@ -19,7 +23,9 @@ export default function AboutPage() {
   return (
     <>
       <Reveal className="pt-12 pb-12 md:pt-16">
-        <p className="mb-3 text-[11px] tracking-[0.2em] text-muted-foreground">ABOUT</p>
+        <p className="mb-3 text-[11px] tracking-[0.2em] text-muted-foreground">
+          ABOUT
+        </p>
         <h1 className="font-serif text-3xl font-semibold tracking-wide text-foreground md:text-4xl">
           关于
         </h1>
@@ -29,7 +35,9 @@ export default function AboutPage() {
         <div className="min-w-0 space-y-10">
           {/* 自我介绍 */}
           <Reveal className="card p-6 md:p-8">
-            <h2 className="font-serif text-xl tracking-wide text-card-foreground">你好，我是森屿</h2>
+            <h2 className="font-serif text-xl tracking-wide text-card-foreground">
+              你好，我是森屿
+            </h2>
             <div className="prose-mori mt-5">
               <p>
                 一名后端工程师，业余时间拍照、弹琴、写点东西。
@@ -46,7 +54,9 @@ export default function AboutPage() {
 
           {/* 技术栈 */}
           <Reveal>
-            <h2 className="mb-5 font-serif text-xl tracking-wide text-foreground">常用工具箱</h2>
+            <h2 className="mb-5 font-serif text-xl tracking-wide text-foreground">
+              常用工具箱
+            </h2>
             <div className="grid gap-4 sm:grid-cols-2">
               {TOOLBOX.map((box) => (
                 <div key={box.title} className="card card-hover p-5">
@@ -55,7 +65,10 @@ export default function AboutPage() {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {box.tags.map((t) => (
-                      <span key={t} className={`tag ${box.accent ? "tag-accent" : ""}`}>
+                      <span
+                        key={t}
+                        className={`tag ${box.accent ? "tag-accent" : ""}`}
+                      >
                         {t}
                       </span>
                     ))}
@@ -67,7 +80,9 @@ export default function AboutPage() {
 
           {/* 站点说明 */}
           <Reveal>
-            <h2 className="mb-5 font-serif text-xl tracking-wide text-foreground">关于本站</h2>
+            <h2 className="mb-5 font-serif text-xl tracking-wide text-foreground">
+              关于本站
+            </h2>
             <div className="card divide-y divide-border overflow-hidden">
               {[
                 { k: "技术方案", v: "Next.js + Tailwind CSS" },
@@ -77,16 +92,32 @@ export default function AboutPage() {
                   v: (
                     <span className="inline-flex items-center gap-2 text-card-foreground">
                       <span className="inline-flex gap-1">
-                        <span className="h-4 w-4 rounded-full border border-border" style={{ background: "#6b8fba" }}></span>
-                        <span className="h-4 w-4 rounded-full border border-border" style={{ background: "#c4a882" }}></span>
+                        <span
+                          className="h-4 w-4 rounded-full border border-border"
+                          style={{ background: "#6b8fba" }}
+                        ></span>
+                        <span
+                          className="h-4 w-4 rounded-full border border-border"
+                          style={{ background: "#c4a882" }}
+                        ></span>
                       </span>
                       雾霾蓝 / 暖棕金
                     </span>
                   ),
                 },
-                { k: "上线时间", v: <span className="tabular-nums text-card-foreground">2024-03-16</span> },
+                {
+                  k: "上线时间",
+                  v: (
+                    <span className="tabular-nums text-card-foreground">
+                      2024-03-16
+                    </span>
+                  ),
+                },
               ].map((row) => (
-                <div key={row.k} className="flex items-center justify-between px-6 py-4 text-sm">
+                <div
+                  key={row.k}
+                  className="flex items-center justify-between px-6 py-4 text-sm"
+                >
                   <span className="text-muted-foreground">{row.k}</span>
                   {typeof row.v === "string" ? (
                     <span className="text-card-foreground">{row.v}</span>
@@ -100,10 +131,16 @@ export default function AboutPage() {
 
           {/* 友链 */}
           <Reveal>
-            <h2 className="mb-5 font-serif text-xl tracking-wide text-foreground">友链</h2>
+            <h2 className="mb-5 font-serif text-xl tracking-wide text-foreground">
+              友链
+            </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {LINKS.map((l) => (
-                <a key={l.name} href="#" className="card card-hover group flex items-center gap-3 p-4">
+                <a
+                  key={l.name}
+                  href="#"
+                  className="card card-hover group flex items-center gap-3 p-4"
+                >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/12 font-serif text-sm text-primary">
                     {l.initial}
                   </div>
@@ -111,7 +148,9 @@ export default function AboutPage() {
                     <p className="truncate text-sm text-card-foreground transition-colors group-hover:text-primary">
                       {l.name}
                     </p>
-                    <p className="truncate text-xs text-muted-foreground">{l.desc}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {l.desc}
+                    </p>
                   </div>
                 </a>
               ))}
@@ -120,7 +159,9 @@ export default function AboutPage() {
 
           {/* 联系 */}
           <Reveal>
-            <h2 className="mb-5 font-serif text-xl tracking-wide text-foreground">找我</h2>
+            <h2 className="mb-5 font-serif text-xl tracking-wide text-foreground">
+              找我
+            </h2>
             <div className="flex flex-wrap gap-3">
               {[
                 { icon: "github" as const, label: "GitHub" },
@@ -144,17 +185,19 @@ export default function AboutPage() {
         <aside className="space-y-6">
           <div className="sticky top-20 space-y-6">
             <div className="card p-6 text-center">
-              <div
-                className="mx-auto flex h-20 w-20 items-center justify-center rounded-full font-serif text-2xl text-primary"
-                style={{
-                  background:
-                    "linear-gradient(135deg,color-mix(in oklab,var(--primary) 22%,transparent),color-mix(in oklab,var(--accent) 26%,transparent))",
-                }}
-              >
-                森
-              </div>
-              <p className="mt-4 font-serif text-lg tracking-wide text-card-foreground">森屿</p>
-              <p className="mt-1 text-xs text-muted-foreground">后端工程师 / 摄影爱好者</p>
+              <Image
+                alt="网络头像"
+                width={80}
+                height={80}
+                src="https://picsum.photos/seed/mori-avatar/96/96"
+                className="mx-auto rounded-full"
+              />
+              <p className="mt-4 font-serif text-lg tracking-wide text-card-foreground">
+                森屿
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                后端工程师 / 摄影爱好者
+              </p>
               <div className="mt-5 grid grid-cols-3 gap-2 border-t border-border pt-5 text-center">
                 {[
                   { label: "文章", value: STATS.articles },
@@ -162,17 +205,28 @@ export default function AboutPage() {
                   { label: "相册", value: STATS.albums },
                 ].map((s) => (
                   <div key={s.label}>
-                    <p className="font-serif text-lg tabular-nums text-foreground">{s.value}</p>
-                    <p className="mt-0.5 text-[11px] text-muted-foreground">{s.label}</p>
+                    <p className="font-serif text-lg tabular-nums text-foreground">
+                      {s.value}
+                    </p>
+                    <p className="mt-0.5 text-[11px] text-muted-foreground">
+                      {s.label}
+                    </p>
                   </div>
                 ))}
               </div>
             </div>
 
             <div className="card p-5">
-              <p className="mb-3 font-serif text-xs tracking-[0.14em] text-muted-foreground">本站使用</p>
+              <p className="mb-3 font-serif text-xs tracking-[0.14em] text-muted-foreground">
+                本站使用
+              </p>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                {["Next.js", "Tailwind CSS v4", "CSS 变量换肤", "无外部 UI 依赖"].map((t) => (
+                {[
+                  "Next.js",
+                  "Tailwind CSS v4",
+                  "CSS 变量换肤",
+                  "无外部 UI 依赖",
+                ].map((t) => (
                   <li key={t} className="flex items-center gap-2">
                     <span className="h-1 w-1 rounded-full bg-primary"></span>
                     {t}

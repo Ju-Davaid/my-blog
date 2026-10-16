@@ -26,7 +26,10 @@ export default function SiteHeader() {
   // 点击外部关闭下拉
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setMoreOpen(false);
       }
     };
@@ -43,7 +46,7 @@ export default function SiteHeader() {
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
       <div
-        className="mx-auto flex h-[50px] items-center justify-between px-3 md:px-5"
+        className="mx-auto flex h-12.5 items-center justify-between px-3 md:px-5"
         style={{ maxWidth: 1100 }}
       >
         <Link

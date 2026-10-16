@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import Reveal from "@/components/Reveal";
 import ReadingProgress from "@/components/ReadingProgress";
 import Icon from "@/components/Icon";
+import CommentSection from "@/components/comments/CommentSection";
+import LazyMount from "@/components/comments/LazyMount";
 import { getPostBySlug, POSTS } from "@/lib/data";
 
 export function generateStaticParams() {
@@ -218,6 +220,19 @@ async headers() {
               )}
             </div>
           </footer>
+
+          {/* 评论区：滚动到视口再挂载（首屏要生成上万条数据）
+              layout="flow" —— 不设固定高度，高度随评论数增长，跟随页面滚动 */}
+          <LazyMount className="mt-14 block border-t border-border pt-10">
+            <CommentSection
+              key={post.slug}
+              contentId={`post-${post.slug}`}
+              preset="article"
+              layout="flow"
+              initialCount={20}
+              loadStep={20}
+            />
+          </LazyMount>
         </article>
 
         {/* 侧栏 */}

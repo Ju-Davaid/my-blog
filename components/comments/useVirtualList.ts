@@ -22,6 +22,7 @@ export type VirtualItem = {
 };
 
 type Options = {
+  /** 行数 */
   count: number;
   /** 兜底行高估值，越接近真实值、测量回填带来的跳动越小 */
   estimateSize: number;
@@ -98,7 +99,8 @@ export function useVirtualList({
     let hi = count;
     while (lo < hi) {
       const mid = (lo + hi) >> 1;
-      if (offsets[mid] + estimateOf(getKey(mid)) + gap <= scrollTop) lo = mid + 1;
+      if (offsets[mid] + estimateOf(getKey(mid)) + gap <= scrollTop)
+        lo = mid + 1;
       else hi = mid;
     }
     const start = Math.max(0, lo - overscan);
@@ -124,7 +126,9 @@ export function useVirtualList({
 
     const commit = (nextTop: number, nextViewport: number) => {
       setScrollTop((prev) => (Math.abs(prev - nextTop) < EPS ? prev : nextTop));
-      setViewport((prev) => (Math.abs(prev - nextViewport) < EPS ? prev : nextViewport));
+      setViewport((prev) =>
+        Math.abs(prev - nextViewport) < EPS ? prev : nextViewport,
+      );
     };
 
     const measure = () => {
@@ -197,9 +201,12 @@ export function useVirtualList({
       const size = estimateOf(getKey(idx));
 
       if (isWindow) {
-        const docTop = el.getBoundingClientRect().top + window.scrollY + offsets[idx];
+        const docTop =
+          el.getBoundingClientRect().top + window.scrollY + offsets[idx];
         const top =
-          align === "center" ? docTop - (window.innerHeight - size) / 2 : docTop;
+          align === "center"
+            ? docTop - (window.innerHeight - size) / 2
+            : docTop;
         window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
         return;
       }

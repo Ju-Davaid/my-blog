@@ -22,7 +22,7 @@ import { useComments } from "./useComments";
    · 回复：点某条评论 → 输入框变为「回复 @昵称」，发布后以「回复 @xxx」归入同线程
    ========================================================================== */
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 
 type MomentCommentsProps = {
   momentId: string;
@@ -42,22 +42,40 @@ export default function MomentComments({
   const [page, setPage] = useState(1);
   const cfg = useMemo(() => makeMomentConfig(momentId), [momentId]);
 
-  const { ready, all, total, addComment, removeComment, userName, updateUserName, userEmail, updateUserEmail } =
-    useComments(`moment-${momentId}`, cfg, open);
+  const {
+    ready,
+    all,
+    total,
+    addComment,
+    removeComment,
+    userName,
+    updateUserName,
+    userEmail,
+    updateUserEmail,
+  } = useComments(`moment-${momentId}`, cfg, open);
 
   const [replyTo, setReplyTo] = useState<Comment | null>(null);
   const [draft, setDraft] = useState("");
   const [captchaInput, setCaptchaInput] = useState("");
   const [captchaCode, setCaptchaCode] = useState("");
   const [captchaNonce, setCaptchaNonce] = useState(0);
-  const [errors, setErrors] = useState<{ name?: string; email?: string; captcha?: string }>({});
+  const [errors, setErrors] = useState<{
+    name?: string;
+    email?: string;
+    captcha?: string;
+  }>({});
   const panelRef = useRef<HTMLDivElement | null>(null);
   const tailRef = useRef<HTMLDivElement | null>(null);
 
   /** 朋友圈式时间正序（新评论在末页） */
-  const flat = useMemo(() => [...all].sort((a, b) => a.createdAt - b.createdAt), [all]);
+  const flat = useMemo(
+    () => [...all].sort((a, b) => a.createdAt - b.createdAt),
+    [all],
+  );
 
-  const rawPageCount = ready ? Math.max(1, Math.ceil(flat.length / PAGE_SIZE)) : 1;
+  const rawPageCount = ready
+    ? Math.max(1, Math.ceil(flat.length / PAGE_SIZE))
+    : 1;
   /** 删除评论后总页数可能缩水，展示与切片都做钳制（不用 effect，规避 lint 规则） */
   const pageCount = rawPageCount;
   const currentPage = Math.min(page, pageCount);
@@ -68,7 +86,8 @@ export default function MomentComments({
 
   /** 页码窗口：≤7 页全量展示，否则 收拢为 1 … p-1 p p+1 … 末页 */
   const pagesToShow = useMemo<(number | "…")[]>(() => {
-    if (pageCount <= 7) return Array.from({ length: pageCount }, (_, i) => i + 1);
+    if (pageCount <= 7)
+      return Array.from({ length: pageCount }, (_, i) => i + 1);
     const set = new Set<number>([1, pageCount]);
     for (const p of [currentPage - 1, currentPage, currentPage + 1]) {
       if (p > 1 && p < pageCount) set.add(p);
@@ -88,7 +107,10 @@ export default function MomentComments({
     setPage(n);
     // 换页后把面板顶部滚进视口，避免停留在长列表的旧位置
     requestAnimationFrame(() =>
-      panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }),
+      panelRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      }),
     );
   }, []);
 
@@ -103,7 +125,8 @@ export default function MomentComments({
     if (!email) next.email = "请填写邮箱";
     else if (!isValidEmail(email)) next.email = "邮箱格式不正确";
     if (!captchaInput.trim()) next.captcha = "请填写验证码";
-    else if (!checkCaptcha(captchaInput, captchaCode)) next.captcha = "验证码不正确";
+    else if (!checkCaptcha(captchaInput, captchaCode))
+      next.captcha = "验证码不正确";
 
     setErrors(next);
     if (Object.keys(next).length > 0) {
@@ -162,7 +185,11 @@ export default function MomentComments({
             liked ? "text-destructive" : "hover:text-primary"
           }`}
         >
-          <Icon name="heart" className="h-3 w-3" style={{ fill: liked ? "currentColor" : "none" }} />
+          <Icon
+            name="heart"
+            className="h-3 w-3"
+            style={{ fill: liked ? "currentColor" : "none" }}
+          />
           <span className="tabular-nums">{likes + (liked ? 1 : 0)}</span>
         </button>
 
@@ -187,11 +214,17 @@ export default function MomentComments({
             <div className="space-y-2 py-1" aria-busy="true" aria-live="polite">
               <span className="sr-only">评论加载中</span>
               {[64, 88, 48].map((w, i) => (
-                <div key={i} className="cmt-skel h-3 rounded" style={{ width: `${w}%` }} />
+                <div
+                  key={i}
+                  className="cmt-skel h-3 rounded"
+                  style={{ width: `${w}%` }}
+                />
               ))}
             </div>
           ) : paged.length === 0 ? (
-            <p className="py-1 text-[13px] text-muted-foreground">还没有评论，来抢沙发～</p>
+            <p className="py-1 text-[13px] text-muted-foreground">
+              还没有评论，来抢沙发～
+            </p>
           ) : (
             <ul className="space-y-2.5">
               {paged.map((c) => (
@@ -210,7 +243,9 @@ export default function MomentComments({
                         <span className="text-muted-foreground">
                           {" "}
                           回复{" "}
-                          <span className="text-primary/90">@{c.replyToName}</span>
+                          <span className="text-primary/90">
+                            @{c.replyToName}
+                          </span>
                         </span>
                       )}
                     </button>
@@ -252,7 +287,8 @@ export default function MomentComments({
                   value={userName}
                   onChange={(e) => {
                     updateUserName(e.target.value.slice(0, 16));
-                    if (errors.name) setErrors((p) => ({ ...p, name: undefined }));
+                    if (errors.name)
+                      setErrors((p) => ({ ...p, name: undefined }));
                   }}
                   placeholder="昵称 *"
                   aria-label="昵称"
@@ -265,7 +301,8 @@ export default function MomentComments({
                   value={userEmail}
                   onChange={(e) => {
                     updateUserEmail(e.target.value.slice(0, 64));
-                    if (errors.email) setErrors((p) => ({ ...p, email: undefined }));
+                    if (errors.email)
+                      setErrors((p) => ({ ...p, email: undefined }));
                   }}
                   placeholder="邮箱 *"
                   aria-label="邮箱"
@@ -280,7 +317,8 @@ export default function MomentComments({
                   value={captchaInput}
                   onChange={(e) => {
                     setCaptchaInput(e.target.value.slice(0, 6));
-                    if (errors.captcha) setErrors((p) => ({ ...p, captcha: undefined }));
+                    if (errors.captcha)
+                      setErrors((p) => ({ ...p, captcha: undefined }));
                   }}
                   placeholder="验证码 *"
                   aria-label="验证码"
@@ -300,9 +338,12 @@ export default function MomentComments({
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.nativeEvent.isComposing) submit();
+                    if (e.key === "Enter" && !e.nativeEvent.isComposing)
+                      submit();
                   }}
-                  placeholder={replyTo ? `回复 @${replyTo.author.name}…` : "评论内容 *"}
+                  placeholder={
+                    replyTo ? `回复 @${replyTo.author.name}…` : "评论内容 *"
+                  }
                   className="min-w-0 flex-1 rounded-md border border-border bg-background px-3 py-1.5 text-[13px] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/50"
                 />
                 <button

@@ -50,7 +50,7 @@ export default async function PostPage({
       <ReadingProgress />
 
       {/* 面包屑 */}
-      <nav className="reveal flex items-center gap-2 pt-8 text-xs text-muted-foreground">
+      <nav className="flex items-center gap-2 pt-8 text-xs text-muted-foreground">
         <Link href="/" className="transition-colors hover:text-primary">
           首页
         </Link>
@@ -65,7 +65,7 @@ export default async function PostPage({
       <div className="mt-6 grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_200px]">
         {/* 正文 */}
         <article className="min-w-0">
-          <header className="reveal border-b border-border pb-8">
+          <header className="border-b border-border pb-8">
             <div className="mb-4 flex flex-wrap gap-2">
               {post.pinned && <span className="tag tag-accent">置顶</span>}
               {post.tags.map((t) => (
@@ -94,7 +94,7 @@ export default async function PostPage({
           </header>
 
           {isFullArticle ? (
-            <div className="prose-mori reveal mt-8">
+            <div className="prose-mori mt-8">
               <p>
                 凌晨三点十七分，手机在床头震了一下。是监控群机器人的告警：站点 QPS 从个位数跳到了四百多，
                 出网带宽打满。我第一反应是某篇文章被转发了，点开一看——请求路径全是不存在的随机字符串。
@@ -176,7 +176,7 @@ async headers() {
               </p>
             </div>
           ) : (
-            <div className="prose-mori reveal mt-8">
+            <div className="prose-mori mt-8">
               <p>{post.excerpt}</p>
               <p>
                 这篇文章的正文还在整理中。它被收录在这里，是因为它承载了某个阶段的想法，
@@ -186,7 +186,7 @@ async headers() {
           )}
 
           {/* 页脚导航 */}
-          <footer className="reveal mt-14 border-t border-border pt-8">
+          <footer className="mt-14 border-t border-border pt-8">
             <div className="flex flex-wrap gap-2">
               {post.tags.map((t) => (
                 <span key={t} className="tag">

@@ -1,4 +1,4 @@
-import { Reveal, Icon } from "@/components/ui";
+import { Icon } from "@/components/ui";
 import { STATS } from "@/lib/data";
 import Image from "next/image";
 import type { Metadata } from "next";
@@ -26,19 +26,19 @@ const LINKS = [
 export default function AboutPage() {
   return (
     <>
-      <Reveal className="pt-12 pb-12 md:pt-16">
+      <div className="pt-12 pb-12 md:pt-16">
         <p className="mb-3 text-[11px] tracking-[0.2em] text-muted-foreground">
           ABOUT
         </p>
         <h1 className="font-serif text-3xl font-semibold tracking-wide text-foreground md:text-4xl">
           关于
         </h1>
-      </Reveal>
+      </div>
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_280px]">
         <div className="min-w-0 space-y-10">
           {/* 自我介绍 */}
-          <Reveal className="card p-6 md:p-8">
+          <div className="card p-6 md:p-8">
             <h2 className="font-serif text-xl tracking-wide text-card-foreground">
               你好，我是森屿
             </h2>
@@ -54,10 +54,10 @@ export default function AboutPage() {
               </p>
               <blockquote>死亡不属于工人阶级！</blockquote>
             </div>
-          </Reveal>
+          </div>
 
           {/* 技术栈 */}
-          <Reveal>
+          <div>
             <h2 className="mb-5 font-serif text-xl tracking-wide text-foreground">
               常用工具箱
             </h2>
@@ -80,10 +80,10 @@ export default function AboutPage() {
                 </div>
               ))}
             </div>
-          </Reveal>
+          </div>
 
           {/* 站点说明 */}
-          <Reveal>
+          <div>
             <h2 className="mb-5 font-serif text-xl tracking-wide text-foreground">
               关于本站
             </h2>
@@ -131,10 +131,10 @@ export default function AboutPage() {
                 </div>
               ))}
             </div>
-          </Reveal>
+          </div>
 
           {/* 友链 */}
-          <Reveal>
+          <div>
             <h2 className="mb-5 font-serif text-xl tracking-wide text-foreground">
               友链
             </h2>
@@ -159,10 +159,10 @@ export default function AboutPage() {
                 </a>
               ))}
             </div>
-          </Reveal>
+          </div>
 
           {/* 联系 */}
-          <Reveal>
+          <div>
             <h2 className="mb-5 font-serif text-xl tracking-wide text-foreground">
               找我
             </h2>
@@ -182,7 +182,7 @@ export default function AboutPage() {
                 </a>
               ))}
             </div>
-          </Reveal>
+          </div>
         </div>
 
         {/* 侧栏 */}

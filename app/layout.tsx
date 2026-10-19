@@ -74,7 +74,9 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="flex min-h-screen flex-col overflow-x-hidden pb-24 font-sans antialiased md:pb-0">
+      {/* body 上不要写 overflow-x-hidden —— 横向裁剪统一放在 globals.css 的 html 上，
+          否则 html 的 overflow 非 visible 时 body 会变成滚动容器，header 的 sticky 会失效 */}
+      <body className="flex min-h-screen flex-col pb-24 font-sans antialiased md:pb-0">
         <SiteShell>{children}</SiteShell>
       </body>
     </html>

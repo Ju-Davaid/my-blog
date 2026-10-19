@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Reveal, Icon } from "@/components/ui";
+import { Icon } from "@/components/ui";
 import { PostCard } from "@/components/post";
 import {
   POSTS,
@@ -18,7 +18,7 @@ export default function HomePage() {
   return (
     <>
       {/* 首屏 */}
-      <Reveal className="pt-14 pb-16 md:pt-24 md:pb-20">
+      <div className="pt-14 pb-16 md:pt-24 md:pb-20">
         <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-[11px] tracking-[0.14em] text-muted-foreground backdrop-blur">
           <span className="h-1.5 w-1.5 rounded-full bg-primary"></span>
           SINCE 2024 · 记录中
@@ -73,10 +73,10 @@ export default function HomePage() {
             </div>
           ))}
         </dl>
-      </Reveal>
+      </div>
 
       {/* 置顶文章 */}
-      <Reveal>
+      <div>
         <div className="mb-5 flex items-end justify-between">
           <h2 className="font-serif text-xl tracking-wide text-foreground">
             置顶
@@ -135,10 +135,10 @@ export default function HomePage() {
             </div>
           </Link>
         )}
-      </Reveal>
+      </div>
 
       {/* 最新文章 */}
-      <Reveal className="mt-16">
+      <div className="mt-16">
         <div className="mb-5 flex items-end justify-between">
           <h2 className="font-serif text-xl tracking-wide text-foreground">
             最新文章
@@ -156,10 +156,10 @@ export default function HomePage() {
             <PostCard key={post.slug} post={post} />
           ))}
         </div>
-      </Reveal>
+      </div>
 
       {/* 标签 */}
-      <Reveal className="mt-16">
+      <div className="mt-16">
         <div className="mb-5 flex items-end justify-between">
           <h2 className="font-serif text-xl tracking-wide text-foreground">
             标签
@@ -183,10 +183,10 @@ export default function HomePage() {
             </Link>
           ))}
         </div>
-      </Reveal>
+      </div>
 
       {/* 归档时间线 */}
-      <Reveal className="mt-16">
+      <div className="mt-16">
         <div className="mb-8 flex items-end justify-between">
           <h2 className="font-serif text-xl tracking-wide text-foreground">
             归档
@@ -220,7 +220,7 @@ export default function HomePage() {
             </div>
           ))}
         </div>
-      </Reveal>
+      </div>
     </>
   );
 }

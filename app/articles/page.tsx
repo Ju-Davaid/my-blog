@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Reveal, Icon } from "@/components/ui";
+import { Icon } from "@/components/ui";
 import { POSTS, postCover } from "@/lib/data";
 
 const FILTERS = [
@@ -37,7 +37,7 @@ export default function ArticlesPage() {
 
   return (
     <>
-      <Reveal className="pt-12 pb-8 md:pt-16">
+      <div className="pt-12 pb-8 md:pt-16">
         <p className="mb-3 text-[11px] tracking-[0.2em] text-muted-foreground">
           ARTICLES
         </p>
@@ -48,10 +48,10 @@ export default function ArticlesPage() {
           共 <span className="tabular-nums text-foreground">72</span>{" "}
           篇。按时间倒序排列，支持关键词搜索与标签筛选。
         </p>
-      </Reveal>
+      </div>
 
       {/* 工具栏 */}
-      <Reveal className="mb-8">
+      <div className="mb-8">
         <div className="card p-4 md:p-5">
           <div className="relative">
             <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground">
@@ -79,7 +79,7 @@ export default function ArticlesPage() {
             ))}
           </div>
         </div>
-      </Reveal>
+      </div>
 
       {/* 列表：紧凑多列卡片 */}
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

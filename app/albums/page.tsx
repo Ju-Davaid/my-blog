@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Reveal } from "@/components/ui";
 import { PhotoGrid } from "@/components/media";
 import { ALBUMS, FEATURED_PHOTOS } from "@/lib/data";
 import type { Metadata } from "next";
@@ -13,7 +12,7 @@ export default function AlbumsPage() {
 
   return (
     <>
-      <Reveal className="pt-12 pb-10 md:pt-16">
+      <div className="pt-12 pb-10 md:pt-16">
         <p className="mb-3 text-[11px] tracking-[0.2em] text-muted-foreground">
           ALBUMS
         </p>
@@ -30,10 +29,10 @@ export default function AlbumsPage() {
           张照片。点击封面进入相册，
           相册内点击任意照片可放大查看，支持键盘方向键与手势切换（照片来源于网络占位服务，可替换为本地图片）。
         </p>
-      </Reveal>
+      </div>
 
       {/* 相册封面（按时间倒序） */}
-      <Reveal className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         {ALBUMS.map((a) => (
           <Link
             key={a.id}
@@ -67,10 +66,10 @@ export default function AlbumsPage() {
             </div>
           </Link>
         ))}
-      </Reveal>
+      </div>
 
       {/* 精选照片瀑布流 */}
-      <Reveal className="mt-16">
+      <div className="mt-16">
         <div className="mb-6 flex items-end justify-between">
           <h2 className="font-serif text-xl tracking-wide text-foreground">
             精选
@@ -85,7 +84,7 @@ export default function AlbumsPage() {
           variant="masonry"
           masonryClassName="columns-2 gap-4 md:columns-3 lg:columns-4"
         />
-      </Reveal>
+      </div>
     </>
   );
 }

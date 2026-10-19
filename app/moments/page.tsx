@@ -1,4 +1,3 @@
-import { Reveal } from "@/components/ui";
 import { PhotoGrid } from "@/components/media";
 import { MomentComments } from "@/components/comments";
 import { MOMENTS, MOMENT_TIMELINE } from "@/lib/data";
@@ -15,14 +14,14 @@ export const metadata: Metadata = {
 export default function MomentsPage() {
   return (
     <>
-      <Reveal className="pt-12 pb-8 md:pt-16">
+      <div className="pt-12 pb-8 md:pt-16">
         <p className="mb-3 text-[11px] tracking-[0.2em] text-muted-foreground">
           MOMENTS
         </p>
         <h1 className="font-serif text-3xl font-semibold tracking-wide text-foreground md:text-4xl">
           动态
         </h1>
-      </Reveal>
+      </div>
 
       {/* 三栏：资料卡 / 信息流 / 时间轴 */}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[220px_minmax(0,1fr)_170px]">
@@ -87,8 +86,8 @@ export default function MomentsPage() {
 
         {/* 中栏：朋友圈信息流 */}
         <section className="min-w-0 space-y-8">
-          {MOMENTS.map((m, i) => (
-            <Reveal key={m.id} delay={Math.min(i, 4) * 45}>
+          {MOMENTS.map((m) => (
+            <div key={m.id}>
               <article className="flex gap-3">
                 <Image
                   width={40}
@@ -115,7 +114,7 @@ export default function MomentsPage() {
                   />
                 </div>
               </article>
-            </Reveal>
+            </div>
           ))}
         </section>
 

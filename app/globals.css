@@ -100,9 +100,19 @@
     border-color: var(--border);
   }
 
+  /* ⚠ 横向裁剪必须写在**根元素**上，body 上不能再写 overflow-x: hidden。
+     原因：根元素的 overflow 会传播到视口；一旦 html 的 overflow 不是 visible，
+     浏览器就停止从 body 取值 —— 此时 body 上残留的 overflow-x:hidden 会让
+     **body 变成滚动容器**，.site-header 的 position:sticky 立刻失效（滚动后 header 跑掉）。 */
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--muted-foreground) 42%, transparent)
+      var(--background);
   }
 
   body {
@@ -654,22 +664,6 @@
    ========================================================================== */
 
 @layer utilities {
-  /* 滚动显现：CSS 原生滚动驱动动画（Chrome/Edge 115+，Safari 18.2+）。
-     不支持时自动降级为内容直接可见，无 JS 参与，因此不存在水合时序问题。
-     旧方案（IntersectionObserver 改 class）会与 React 渐进式水合冲突。 */
-  @supports (animation-timeline: view()) {
-    .reveal {
-      animation: mori-reveal 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) both;
-      animation-timeline: view();
-      animation-range: entry 5% entry 45%;
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .reveal {
-        animation: none;
-      }
-    }
-  }
-
   .text-balance {
     text-wrap: balance;
   }
@@ -685,16 +679,4 @@
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-}
-
-/* 滚动显现关键帧（配合 animation-timeline: view() 使用） */
-@keyframes mori-reveal {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
 }

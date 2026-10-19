@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Reveal, Icon } from "@/components/ui";
+import { Icon } from "@/components/ui";
 import { PhotoGrid } from "@/components/media";
 import { ALBUMS, buildPhotos, getAlbum } from "@/lib/data";
 
@@ -52,7 +52,7 @@ export default async function AlbumPage({
   return (
     <>
       {/* 面包屑 */}
-      <nav className="reveal flex items-center gap-2 pt-8 text-xs text-muted-foreground">
+      <nav className="flex items-center gap-2 pt-8 text-xs text-muted-foreground">
         <Link href="/" className="transition-colors hover:text-primary">
           首页
         </Link>
@@ -64,7 +64,7 @@ export default async function AlbumPage({
         <span className="text-foreground/70">{album.title}</span>
       </nav>
 
-      <header className="reveal pt-8 pb-10">
+      <header className="pt-8 pb-10">
         <p className="mb-3 text-[11px] tracking-[0.2em] text-muted-foreground">{album.date}</p>
         <h1 className="font-serif text-3xl font-semibold tracking-wide text-foreground md:text-4xl">
           {album.title}
@@ -89,12 +89,12 @@ export default async function AlbumPage({
       </header>
 
       {/* 照片墙 */}
-      <Reveal>
+      <div>
         <PhotoGrid photos={photos} variant="masonry" masonryClassName="columns-1 gap-4 sm:columns-2 lg:columns-3" />
-      </Reveal>
+      </div>
 
       {/* 上一个 / 下一个相册 */}
-      <Reveal className="mt-14">
+      <div className="mt-14">
         <div className="flex flex-col gap-4 sm:flex-row">
           <Link href={`/albums/${prev.id}`} className="card card-hover group flex-1 p-5">
             <p className="text-xs text-muted-foreground">← 上一个相册</p>
@@ -111,7 +111,7 @@ export default async function AlbumPage({
             </p>
           </Link>
         </div>
-      </Reveal>
+      </div>
     </>
   );
 }

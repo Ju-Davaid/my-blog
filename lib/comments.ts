@@ -479,8 +479,8 @@ export const localCommentStore: CommentStore = {
    用户身份（本地昵称 + 邮箱）
    -------------------------------------------------------------------------- */
 
-const USER_KEY = "mori-cmt-user-v1";
-const EMAIL_KEY = "mori-cmt-email-v1";
+const USER_KEY = "DAVAID_BLOG_USER";
+const EMAIL_KEY = "DAVAID_BLOG_EMAIL";
 
 export type UserIdentity = { name: string; email: string };
 

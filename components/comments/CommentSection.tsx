@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CommentComposer from "./CommentComposer";
 import CommentItem, { type CommentActions } from "./CommentItem";
 import CommentList from "./CommentList";
-import ReplyPanel from "./ReplyPanel";
 import { Icon } from "@/components/ui";
 import {
   SEED_PRESETS,
@@ -85,10 +84,6 @@ export default function CommentSection({
   const [replyTo, setReplyTo] = useState<{ id: string; name: string } | null>(
     null,
   );
-  const [thread, setThread] = useState<{
-    rootId: string;
-    focusId?: string;
-  } | null>(null);
   const composerRef = useRef<HTMLDivElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -129,17 +124,13 @@ export default function CommentSection({
       onLike: toggleLike,
       onReply: (comment) => {
         setReplyTo({ id: comment.id, name: comment.author.name });
-        // flow 模式输入框固定挂在评论区顶部，滚回去才看得到「回复 @某人」
+        // flow 模式输入框固定在视口底部，始终可见，聚焦即可
         if (isFlow) {
-          const el = composerRef.current;
-          if (el) {
-            const top = el.getBoundingClientRect().top + window.scrollY - 90;
-            window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
-          }
+          const el = composerRef.current?.querySelector("textarea");
+          el?.focus();
         }
       },
       onDelete: removeComment,
-      onOpenThread: (rootId, focusId) => setThread({ rootId, focusId }),
     }),
     [toggleLike, removeComment, isFlow],
   );
@@ -170,9 +161,6 @@ export default function CommentSection({
     },
     [sort, setSort, initialCount],
   );
-
-  const threadRoot = thread ? (byId.get(thread.rootId) ?? null) : null;
-  const threadReplies = thread ? (repliesByRoot.get(thread.rootId) ?? []) : [];
 
   /**
    * 按内容估高：折叠的子评论数 + 正文行数。
@@ -227,19 +215,21 @@ export default function CommentSection({
         </div>
       </div>
 
-      {/* 输入框 */}
-      <div ref={composerRef}>
-        <CommentComposer
-          onSubmit={handleSubmit}
-          replyTo={replyTo}
-          onCancelReply={() => setReplyTo(null)}
-          userName={userName}
-          onUserNameChange={updateUserName}
-          userEmail={userEmail}
-          onUserEmailChange={updateUserEmail}
-          placeholder="写下你的想法…"
-        />
-      </div>
+      {/* 输入框（box：挂在顶部；flow：吸底，见下方 sticky 容器） */}
+      {!isFlow && (
+        <div ref={composerRef}>
+          <CommentComposer
+            onSubmit={handleSubmit}
+            replyTo={replyTo}
+            onCancelReply={() => setReplyTo(null)}
+            userName={userName}
+            onUserNameChange={updateUserName}
+            userEmail={userEmail}
+            onUserEmailChange={updateUserEmail}
+            placeholder="写下你的想法…"
+          />
+        </div>
+      )}
 
       {/* 列表 */}
       <div className="mt-4">
@@ -294,28 +284,24 @@ export default function CommentSection({
         </div>
       )}
 
-      {/* 子评论抽屉 */}
-      <ReplyPanel
-        key={thread?.rootId ?? "closed"}
-        root={threadRoot}
-        replies={threadReplies}
-        focusId={thread?.focusId}
-        actions={actions}
-        onClose={() => setThread(null)}
-        onSubmit={(content, replyToName, identity) => {
-          if (!thread) return;
-          addComment({
-            content,
-            parentId: thread.rootId,
-            replyToName,
-            ...identity,
-          });
-        }}
-        userName={userName}
-        onUserNameChange={updateUserName}
-        userEmail={userEmail}
-        onUserEmailChange={updateUserEmail}
-      />
+      {/* flow：吸底输入框（移动端抬高避开底部胶囊导航） */}
+      {isFlow && (
+        <div
+          ref={composerRef}
+          className="sticky z-30 max-md:bottom-21 md:bottom-0 mt-5 pb-1 [&>div]:bg-card [&>div]:shadow-[0_-12px_32px_-18px_rgba(0,0,0,0.35)]"
+        >
+          <CommentComposer
+            onSubmit={handleSubmit}
+            replyTo={replyTo}
+            onCancelReply={() => setReplyTo(null)}
+            userName={userName}
+            onUserNameChange={updateUserName}
+            userEmail={userEmail}
+            onUserEmailChange={updateUserEmail}
+            placeholder="写下你的想法…"
+          />
+        </div>
+      )}
     </section>
   );
 }

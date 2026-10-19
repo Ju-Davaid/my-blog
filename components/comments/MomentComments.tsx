@@ -22,7 +22,8 @@ import { useComments } from "./useComments";
    · 回复：点某条评论 → 输入框变为「回复 @昵称」，发布后以「回复 @xxx」归入同线程
    ========================================================================== */
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
+const COMMENT_OPEN = false;
 
 type MomentCommentsProps = {
   momentId: string;
@@ -37,7 +38,7 @@ export default function MomentComments({
   category,
   date,
 }: MomentCommentsProps) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(COMMENT_OPEN);
   const [liked, setLiked] = useState(false);
   const [page, setPage] = useState(1);
   const cfg = useMemo(() => makeMomentConfig(momentId), [momentId]);

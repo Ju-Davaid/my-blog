@@ -17,13 +17,14 @@ export type CommentActions = {
   onLike: (id: string) => void;
   onReply: (comment: Comment) => void;
   onDelete: (id: string) => void;
-  onOpenThread: (rootId: string, focusId?: string) => void;
 };
 
-/** 子评论行只需要这几个动作，抽屉内复用 */
-export type ReplyActions = Omit<CommentActions, "onOpenThread">;
+/** 子评论行动作（内联展开后复用） */
+export type ReplyActions = CommentActions;
 
 const INLINE_REPLIES = 2;
+/** 内联展开回复时每页条数 */
+const REPLY_PAGE_SIZE = 5;
 
 const MENTION_RE = /(@[^\s@，。！？、；：,.!?;:]{1,16})/g;
 /**
@@ -212,9 +213,18 @@ function CommentItem({
   actions: CommentActions;
 }) {
   const total = replies.length;
-  // 抖音式：短线程直接铺开，长线程只露前 2 条，其余进抽屉
-  const visible =
-    total > INLINE_REPLIES ? replies.slice(0, INLINE_REPLIES) : replies;
+  const [expanded, setExpanded] = useState(false);
+  const [replyPage, setReplyPage] = useState(1);
+
+  // 抖音式：短线程直接铺开，长线程只露前 2 条，其余内联分页展开
+  const hasMore = total > INLINE_REPLIES;
+  const visible = hasMore ? replies.slice(0, INLINE_REPLIES) : replies;
+
+  // 展开后的分页窗口（从第 3 条开始，因为前 2 条已在内联预览里）
+  const rest = hasMore ? replies.slice(INLINE_REPLIES) : [];
+  const pageCount = Math.max(1, Math.ceil(rest.length / REPLY_PAGE_SIZE));
+  const safePage = Math.min(replyPage, pageCount);
+  const paged = rest.slice((safePage - 1) * REPLY_PAGE_SIZE, safePage * REPLY_PAGE_SIZE);
 
   return (
     <div className="rounded-xl border border-border bg-card p-3.5 transition-colors hover:border-primary/30">
@@ -285,18 +295,68 @@ function CommentItem({
                 {visible.map((r) => (
                   <ReplyRow key={r.id} comment={r} actions={actions} dense />
                 ))}
+
+                {/* 展开后的分页回复 */}
+                {expanded &&
+                  paged.map((r) => (
+                    <ReplyRow key={r.id} comment={r} actions={actions} dense />
+                  ))}
               </div>
 
-              {total > INLINE_REPLIES && (
-                <button
-                  type="button"
-                  onClick={() => actions.onOpenThread(comment.id)}
-                  className="mt-2.5 inline-flex cursor-pointer items-center gap-1 text-xs text-primary transition-colors hover:opacity-80"
-                >
-                  <Icon name="message-circle" className="h-3.5 w-3.5" />
-                  查看全部 {total} 条回复
-                  <Icon name="chevron-down" className="h-3 w-3" />
-                </button>
+              {hasMore && (
+                <div className="mt-2.5">
+                  {!expanded ? (
+                    <button
+                      type="button"
+                      onClick={() => setExpanded(true)}
+                      className="inline-flex cursor-pointer items-center gap-1 text-xs text-primary transition-colors hover:opacity-80"
+                    >
+                      <Icon name="message-circle" className="h-3.5 w-3.5" />
+                      查看全部 {total} 条回复
+                      <Icon name="chevron-down" className="h-3 w-3" />
+                    </button>
+                  ) : (
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-t border-border/50 pt-2 text-xs text-muted-foreground">
+                      {pageCount > 1 && (
+                        <span className="flex items-center gap-1">
+                          {safePage > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => setReplyPage((p) => Math.max(1, p - 1))}
+                              className="cursor-pointer transition-colors hover:text-primary"
+                            >
+                              上一页
+                            </button>
+                          )}
+                          <span className="tabular-nums">
+                            {safePage} / {pageCount}
+                          </span>
+                          {safePage < pageCount && (
+                            <button
+                              type="button"
+                              onClick={() => setReplyPage((p) => Math.min(pageCount, p + 1))}
+                              className="cursor-pointer transition-colors hover:text-primary"
+                            >
+                              下一页
+                            </button>
+                          )}
+                        </span>
+                      )}
+                      <span className="flex-1" />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setExpanded(false);
+                          setReplyPage(1);
+                        }}
+                        className="inline-flex cursor-pointer items-center gap-1 transition-colors hover:text-primary"
+                      >
+                        <Icon name="chevron-up" className="h-3 w-3" />
+                        收起
+                      </button>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           )}

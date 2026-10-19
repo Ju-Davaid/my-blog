@@ -8,8 +8,10 @@ import {
   useRef,
   useState,
 } from "react";
-import { Icon } from "@/components/ui";
+import type { PanInfo, Variants } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { Icon } from "@/components/ui";
 
 type LightboxItem = { src: string; caption?: string };
 
@@ -19,34 +21,57 @@ type LightboxContextValue = {
 
 const LightboxContext = createContext<LightboxContextValue | null>(null);
 
+/** 切换方向的滑动变体：向 → 翻页时，新图从右侧进、旧图向左侧出 */
+const slideVariants: Variants = {
+  enter: (dir: number) => ({
+    x: dir > 0 ? "100%" : "-100%",
+    scale: 0.98,
+  }),
+  center: { x: 0, scale: 1 },
+  exit: (dir: number) => ({
+    x: dir > 0 ? "-100%" : "100%",
+    scale: 0.98,
+  }),
+};
+
+/** 大位移用缓出曲线而非弹簧：起点快、末段稳，不会有二次回弹的“顿挫感” */
+const slideTransition = {
+  x: { type: "tween", duration: 0.4, ease: [0.32, 0.72, 0, 1] as [number, number, number, number] },
+  scale: { duration: 0.4, ease: [0.32, 0.72, 0, 1] as [number, number, number, number] },
+} as const;
+
+/** 拖拽判定阈值：距离(px) + 速度权重，轻甩也能切页 */
+const SWIPE_DISTANCE = 64;
+const SWIPE_VELOCITY = 0.15;
+
 /**
  * 灯箱 Provider：提供 open() 给任意照片触发放大查看。
- * 支持 Esc 关闭、←/→ 切换、触屏滑动、点击空白关闭。
+ * 支持 Esc 关闭、←/→ 切换、拖拽滑动切换（motion/react 方向感转场）、点击空白关闭。
  */
 export function LightboxProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<LightboxItem[]>([]);
   const [index, setIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-  const [swapping, setSwapping] = useState(false);
+  /** 1 = 向后翻（内容从右进），-1 = 向前翻（内容从左进） */
+  const [direction, setDirection] = useState(1);
   const lastFocus = useRef<HTMLElement | null>(null);
-  const startX = useRef<number | null>(null);
+  const dragEndAt = useRef(0);
 
   const show = useCallback(
-    (i: number) => {
-      if (!items.length) return;
-      const idx = (i + items.length) % items.length;
-      setSwapping(true);
-      setIndex(idx);
-      // 短暂闪烁后恢复，模拟预加载切换
-      window.setTimeout(() => setSwapping(false), 180);
+    (target: number) => {
+      if (items.length < 2) return;
+      // 先按未取模的目标值判断方向，循环切换时方向才不会反
+      setDirection(target > index ? 1 : -1);
+      setIndex((target + items.length) % items.length);
     },
-    [items.length],
+    [items.length, index],
   );
 
   const open = useCallback((list: LightboxItem[], i = 0) => {
     lastFocus.current = document.activeElement as HTMLElement;
     setItems(list);
     setIndex(i);
+    setDirection(1);
     setIsOpen(true);
     document.body.style.overflow = "hidden";
   }, []);
@@ -56,6 +81,17 @@ export function LightboxProvider({ children }: { children: React.ReactNode }) {
     document.body.style.overflow = "";
     lastFocus.current?.focus?.();
   }, []);
+
+  // 预加载前后两张，滑动过程中不出现空白帧
+  useEffect(() => {
+    if (!isOpen || items.length < 2) return;
+    for (const offset of [-1, 1]) {
+      const next = items[(index + offset + items.length) % items.length];
+      if (!next) continue;
+      const img = new window.Image();
+      img.src = next.src;
+    }
+  }, [isOpen, index, items]);
 
   // 键盘事件
   useEffect(() => {
@@ -69,6 +105,31 @@ export function LightboxProvider({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [isOpen, index, show, close]);
 
+  const onDragEnd = (_: unknown, info: PanInfo) => {
+    dragEndAt.current = Date.now();
+    // 位移 + 速度共同决定，快速轻甩即可翻页
+    const power = info.offset.x + info.velocity.x * SWIPE_VELOCITY;
+    if (power < -SWIPE_DISTANCE) show(index + 1);
+    else if (power > SWIPE_DISTANCE) show(index - 1);
+  };
+
+  const onBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // 拖拽结束紧接着触发的 click 不要当成“点空白关闭”
+    if (Date.now() - dragEndAt.current < 300) return;
+    const el = e.target as HTMLElement;
+    if (el.closest(".lightbox-btn") || el.closest(".lightbox-meta")) return;
+    // 图片自身是 pointer-events:none，命中的总是满屏滑块，
+    // 因此只能按坐标判断点击点是否落在图片范围内
+    const img = e.currentTarget.querySelector<HTMLImageElement>(".lightbox-slide img");
+    if (img) {
+      const r = img.getBoundingClientRect();
+      if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
+        return;
+      }
+    }
+    close();
+  };
+
   const current = items[index];
 
   return (
@@ -80,22 +141,11 @@ export function LightboxProvider({ children }: { children: React.ReactNode }) {
         aria-modal="true"
         aria-label="照片查看"
         className={`lightbox ${isOpen ? "is-open" : ""}`}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) close();
-        }}
-        onTouchStart={(e) => {
-          startX.current = e.touches[0].clientX;
-        }}
-        onTouchEnd={(e) => {
-          if (startX.current === null) return;
-          const dx = e.changedTouches[0].clientX - startX.current;
-          if (Math.abs(dx) > 50) show(dx < 0 ? index + 1 : index - 1);
-          startX.current = null;
-        }}
+        onClick={onBackdropClick}
       >
         <button
           type="button"
-          className="lightbox-btn lightbox-close"
+          className="lightbox-btn lightbox-close "
           onClick={close}
           aria-label="关闭"
         >
@@ -118,15 +168,35 @@ export function LightboxProvider({ children }: { children: React.ReactNode }) {
           <Icon name="chevron-right" className="h-5 w-5" />
         </button>
 
-        {current && (
-          <Image
-            src={current.src}
-            width={1200}
-            height={1200}
-            alt={current.caption ?? ""}
-            className={swapping ? "is-swapping" : ""}
-          />
-        )}
+        <div className="lightbox-stage">
+          <AnimatePresence initial={false} custom={direction}>
+            {current && (
+              <motion.div
+                key={index}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={slideTransition}
+                drag={items.length > 1 ? "x" : false}
+                dragSnapToOrigin
+                dragMomentum={false}
+                onDragEnd={onDragEnd}
+                className="lightbox-slide"
+              >
+                <Image
+                  src={current.src}
+                  width={1200}
+                  height={1200}
+                  alt={current.caption ?? ""}
+                  draggable={false}
+                  className="pointer-events-none select-none"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         <div className="lightbox-meta">
           <span className="lb-caption">{current?.caption ?? ""}</span>

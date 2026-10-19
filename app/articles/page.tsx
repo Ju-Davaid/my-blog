@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
 import { Icon } from "@/components/ui";
-import { POSTS, postCover } from "@/lib/data";
+import { PostCard } from "@/components/post";
+import { POSTS } from "@/lib/data";
 
 const FILTERS = [
   "全部",
@@ -81,44 +80,10 @@ export default function ArticlesPage() {
         </div>
       </div>
 
-      {/* 列表：紧凑多列卡片 */}
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {/* 列表：紧凑多列卡片（复用 PostCard，无底壳封面样式） */}
+      <section className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {visible.map((p) => (
-          <Link
-            key={p.slug}
-            href={`/posts/${p.slug}`}
-            className="card card-hover group flex flex-col overflow-hidden"
-          >
-            <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-border bg-muted">
-              <Image
-                src={postCover(p)}
-                alt={p.title}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-              />
-              {p.pinned && (
-                <span className="tag tag-accent absolute right-2 top-2 z-10">
-                  置顶
-                </span>
-              )}
-            </div>
-
-            <div className="flex flex-1 flex-col p-4">
-              <h2 className="line-clamp-1 font-serif text-[15px] font-semibold leading-snug tracking-wide text-card-foreground transition-colors group-hover:text-primary">
-                {p.title}
-              </h2>
-              <p className="mt-1.5 line-clamp-1 text-xs leading-relaxed text-muted-foreground">
-                {p.excerpt}
-              </p>
-              <div className="mt-auto flex items-center justify-between gap-2 pt-3 text-[11px] text-muted-foreground">
-                <span className="shrink-0 tabular-nums">{p.date}</span>
-                <span className="truncate text-right">
-                  {p.tags.join(" · ")}
-                </span>
-              </div>
-            </div>
-          </Link>
+          <PostCard key={p.slug} post={p} />
         ))}
       </section>
 

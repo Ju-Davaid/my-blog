@@ -105,9 +105,8 @@
   }
 
   html {
+    @apply overflow-x-hidden overflow-y-scroll;
     -webkit-tap-highlight-color: transparent;
-    overflow-x: hidden;
-    overflow-y: scroll;
     scrollbar-gutter: stable;
     scrollbar-width: thin;
     scrollbar-color: color-mix(
@@ -119,10 +118,7 @@
   }
 
   body {
-    background-color: var(--background);
-    color: var(--foreground);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
+    @apply bg-background text-foreground font-sans antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition:
       background-color 0.3s ease,
@@ -150,10 +146,7 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-serif);
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    color: var(--card-foreground);
+    @apply font-serif font-semibold tracking-wide text-card-foreground;
   }
 
   /* 滚动条 */
@@ -198,16 +191,11 @@
 
   /* 顶部导航 —— 滚动后浮现毛玻璃与底边 */
   .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    width: 100%;
+    @apply sticky top-0 z-50 w-full border-b border-transparent bg-transparent;
     transition:
       background-color 0.3s ease,
       border-color 0.3s ease,
       box-shadow 0.3s ease;
-    border-bottom: 1px solid transparent;
-    background-color: transparent;
     backdrop-filter: blur(16px) saturate(150%);
     -webkit-backdrop-filter: blur(16px) saturate(150%);
   }
@@ -219,32 +207,25 @@
 
   /* 导航链接 */
   .nav-link {
-    position: relative;
-    display: inline-block;
-    font-family: var(--font-serif);
+    @apply relative inline-block font-serif text-muted-foreground;
     font-size: 15px;
     letter-spacing: 0.08em;
-    color: var(--muted-foreground);
     transition:
       color 0.2s ease,
       transform 0.2s ease;
   }
   .nav-link:hover {
-    color: var(--primary);
+    @apply text-primary;
     transform: translateY(-1px);
   }
   .nav-link.is-active {
-    color: var(--primary);
-    font-weight: 600;
+    @apply font-semibold text-primary;
     transform: scale(1.06);
   }
 
   /* 卡片 */
   .card {
-    background-color: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-soft);
+    @apply rounded-[var(--radius-xl)] border bg-card shadow-[var(--shadow-soft)];
     transition:
       transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
       box-shadow 0.28s ease,
@@ -258,14 +239,8 @@
 
   /* 标签 */
   .tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
+    @apply inline-flex items-center gap-1 rounded-full text-[11px] leading-[1.5] tracking-wide;
     padding: 0.125rem 0.5rem;
-    border-radius: 999px;
-    font-size: 11px;
-    line-height: 1.5;
-    letter-spacing: 0.04em;
     background-color: color-mix(in oklab, var(--primary) 12%, transparent);
     color: var(--primary);
     border: 1px solid color-mix(in oklab, var(--primary) 22%, transparent);
@@ -305,14 +280,7 @@
     );
   }
   .timeline-dot {
-    position: relative;
-    z-index: 10;
-    height: 16px;
-    width: 16px;
-    flex-shrink: 0;
-    border-radius: 999px;
-    border: 2px solid var(--primary);
-    background-color: var(--background);
+    @apply relative z-10 h-4 w-4 shrink-0 rounded-full border-2 border-primary bg-background;
     transition:
       transform 0.3s ease,
       box-shadow 0.3s ease;
@@ -322,20 +290,15 @@
     box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 16%, transparent);
   }
   .timeline-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 14px;
+    @apply flex items-center gap-3 text-sm;
     transition: color 0.2s ease;
   }
   .timeline-row .tl-date {
-    flex-shrink: 0;
-    width: 2.5rem;
-    font-variant-numeric: tabular-nums;
+    @apply w-10 shrink-0 tabular-nums;
     color: color-mix(in oklab, var(--muted-foreground) 90%, transparent);
   }
   .timeline-row .tl-title {
-    color: var(--muted-foreground);
+    @apply text-muted-foreground;
     transition:
       color 0.2s ease,
       transform 0.2s ease;
@@ -347,30 +310,25 @@
 
   /* 正文排版 */
   .prose-mori {
-    min-width: 0;
+    @apply min-w-0 text-base leading-[1.9];
     overflow-wrap: break-word;
     word-break: break-word;
-    line-height: 1.9;
-    font-size: 16px;
     color: color-mix(in oklab, var(--foreground) 92%, transparent);
   }
   .prose-mori > * + * {
     margin-top: 1.15em;
   }
   .prose-mori h2 {
+    @apply border-l-[3px] border-primary pl-3;
     margin-top: 2.2em;
     font-size: 1.4rem;
-    padding-left: 0.75rem;
-    border-left: 3px solid var(--primary);
   }
   .prose-mori h3 {
     margin-top: 1.8em;
     font-size: 1.15rem;
   }
   .prose-mori a {
-    color: var(--primary);
-    text-decoration: underline;
-    text-underline-offset: 3px;
+    @apply text-primary underline underline-offset-4;
     text-decoration-thickness: 1px;
     text-decoration-color: color-mix(in oklab, var(--primary) 40%, transparent);
   }
@@ -379,13 +337,13 @@
   }
   .prose-mori ul,
   .prose-mori ol {
-    padding-left: 1.4em;
+    @apply pl-[1.4em];
   }
   .prose-mori ul {
-    list-style: disc;
+    @apply list-disc;
   }
   .prose-mori ol {
-    list-style: decimal;
+    @apply list-decimal;
   }
   .prose-mori li::marker {
     color: var(--primary);
@@ -394,33 +352,23 @@
     margin-top: 0.4em;
   }
   .prose-mori blockquote {
+    @apply rounded-r-[var(--radius)] border-l-[3px] border-accent font-serif;
     margin: 1.6em 0;
     padding: 0.9rem 1.1rem;
-    border-left: 3px solid var(--accent);
-    border-radius: 0 var(--radius) var(--radius) 0;
     background-color: color-mix(in oklab, var(--accent) 10%, transparent);
     color: color-mix(in oklab, var(--foreground) 80%, transparent);
-    font-family: var(--font-serif);
   }
   .prose-mori code {
+    @apply rounded px-[0.4em] py-[0.15em] text-[0.88em];
     font-family:
       ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 0.88em;
-    padding: 0.15em 0.4em;
-    border-radius: 4px;
     background-color: color-mix(in oklab, var(--primary) 12%, transparent);
     color: color-mix(in oklab, var(--primary) 88%, var(--foreground));
   }
   .prose-mori pre {
-    max-width: 100%;
+    @apply max-w-full overflow-x-auto rounded-[var(--radius-lg)] border bg-muted text-[13.5px] leading-[1.75];
     margin: 1.5em 0;
     padding: 1rem 1.15rem;
-    overflow-x: auto;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    background-color: var(--muted);
-    font-size: 13.5px;
-    line-height: 1.75;
     -webkit-overflow-scrolling: touch;
   }
   .prose-mori pre code {
@@ -429,13 +377,10 @@
     color: inherit;
   }
   .prose-mori img {
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
+    @apply rounded-[var(--radius-lg)] border;
   }
   .prose-mori hr {
-    margin: 2.4em 0;
-    border: 0;
-    border-top: 1px dashed var(--border);
+    @apply my-[2.4em] border-0 border-t border-dashed;
   }
 
   /* 相册照片项 */
@@ -443,14 +388,10 @@
     break-inside: avoid;
   }
   .album-thumb {
-    display: block;
-    width: 100%;
-    cursor: zoom-in;
-    overflow: hidden;
+    @apply block w-full cursor-zoom-in overflow-hidden;
   }
   .album-thumb img {
-    width: 100%;
-    display: block;
+    @apply block w-full;
     transition:
       transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
       opacity 0.4s ease;
@@ -464,12 +405,7 @@
 
   /* 灯箱 */
   .lightbox {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @apply fixed inset-0 z-[100] flex items-center justify-center;
     background-color: rgba(12, 14, 18, 0.94);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -480,60 +416,34 @@
       visibility 0.28s ease;
   }
   .lightbox.is-open {
-    opacity: 1;
-    visibility: visible;
+    @apply opacity-100 visible;
   }
   /* 舞台：承接左右滑动，裁剪越界的部分（transform 由 motion/react 接管） */
   .lightbox-stage {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    @apply absolute inset-0 z-[1] flex items-center justify-center overflow-hidden;
     touch-action: pan-y;
     /* 不拦截指针：空白处点击要落到 .lightbox 上触发关闭 */
     pointer-events: none;
   }
   /* 滑块绝对定位叠放在一起（不能参与 flex 流，否则新旧两图会并排挤开而非滑动） */
   .lightbox-slide {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: grab;
+    @apply absolute inset-0 flex cursor-grab items-center justify-center;
     will-change: transform;
     /* 只有它接收指针事件（拖拽手势） */
     pointer-events: auto;
   }
   .lightbox-slide:active {
-    cursor: grabbing;
+    @apply cursor-grabbing;
   }
   /* 尺寸/描边交给 CSS，位移与缩放由 motion 内联控制，不能再写 transform 过渡 */
   .lightbox img {
+    @apply h-auto w-auto rounded-[var(--radius-lg)] object-contain;
     max-width: 92vw;
     max-height: 80vh;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    border-radius: var(--radius-lg);
     box-shadow: 0 24px 70px -20px rgba(0, 0, 0, 0.8);
   }
   .lightbox-btn {
-    position: absolute;
-    z-index: 3; /* 必须高于 .lightbox-slide，否则满屏滑块会盖住按钮导致点不动 */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 40px;
-    width: 40px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    background-color: rgba(255, 255, 255, 0.09);
-    color: #fff;
-    cursor: pointer;
+    @apply absolute z-[3] inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-white/10 text-white;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     transition:
@@ -542,86 +452,47 @@
       border-color 0.2s ease;
   }
   .lightbox-btn:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.34);
+    @apply border-white/40 bg-white/20;
     transform: scale(1.06);
   }
   .lightbox-close {
-    top: 1rem;
-    right: 1rem;
+    @apply right-4 top-4;
   }
   .lightbox-prev {
-    left: 1rem;
-    top: 50%;
-    z-index: 10;
-    margin-top: -20px;
+    @apply left-4 top-1/2 z-10 -mt-5;
   }
   .lightbox-next {
-    right: 1rem;
-    top: 50%;
-    margin-top: -20px;
-    z-index: 10;
+    @apply right-4 top-1/2 z-10 -mt-5;
   }
   .lightbox-meta {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.35rem;
+    @apply absolute inset-x-0 bottom-5 flex flex-col items-center gap-1.5 text-xs;
     pointer-events: none;
     color: rgba(255, 255, 255, 0.72);
-    font-size: 12px;
     letter-spacing: 0.06em;
   }
   .lightbox-meta .lb-caption {
-    color: #fff;
-    font-family: var(--font-serif);
-    font-size: 14px;
+    @apply font-serif text-sm text-white;
     letter-spacing: 0.08em;
   }
   .lightbox-meta .lb-counter {
-    font-variant-numeric: tabular-nums;
-    opacity: 0.7;
+    @apply tabular-nums opacity-70;
   }
 
   /* 移动端底部导航 */
   .mobile-nav {
-    position: fixed;
-    left: 50%;
-    bottom: 1rem;
-    transform: translateX(-50%);
-    z-index: 40;
-    display: flex;
-    width: calc(100vw - 2rem);
-    max-width: 28rem;
-    align-items: stretch;
-    gap: 0.25rem;
-    padding: 0.375rem;
-    border-radius: var(--radius-2xl);
-    border: 1px solid color-mix(in oklab, var(--border) 40%, transparent);
+    @apply fixed bottom-4 left-1/2 z-40 flex w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 items-stretch gap-1 rounded-[var(--radius-2xl)] border p-1.5;
+    border-color: color-mix(in oklab, var(--border) 40%, transparent);
     background-color: color-mix(in oklab, var(--background) 95%, transparent);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.22);
   }
   .mobile-nav-item {
-    position: relative;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    padding: 0.5rem 0.375rem;
-    border-radius: var(--radius-lg);
-    color: var(--muted-foreground);
+    @apply relative flex flex-1 flex-col items-center justify-center gap-0.5 rounded-[var(--radius-lg)] px-1.5 py-2 text-muted-foreground;
     transition: color 0.2s ease;
   }
   .mobile-nav-item.is-active {
-    color: var(--primary);
+    @apply text-primary;
   }
   .mobile-nav-item.is-active::before {
     content: "";
@@ -634,15 +505,13 @@
     position: relative;
   }
   .mobile-nav-item span {
-    font-family: var(--font-serif);
-    font-size: 10px;
+    @apply font-serif text-[10px];
     letter-spacing: 0.05em;
   }
 
   /* 朋友圈式九宫格图片 */
   .mom-grid {
-    display: grid;
-    gap: 4px;
+    @apply grid gap-1;
   }
   .mom-grid.n1 {
     grid-template-columns: minmax(0, 60%);
@@ -662,14 +531,7 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   .mom-grid img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    aspect-ratio: 1 / 1;
-    border-radius: 4px;
-    cursor: zoom-in;
-    display: block;
-    background-color: var(--muted);
+    @apply block aspect-square h-full w-full cursor-zoom-in rounded object-cover bg-muted;
     transition: filter 0.3s ease;
   }
   .mom-grid img:hover {
@@ -686,17 +548,14 @@
 
   /* 评论区 —— 虚拟滚动容器 */
   .cmt-scroll {
-    overflow-y: auto;
-    overflow-x: hidden;
+    @apply overflow-y-auto overflow-x-hidden;
     overscroll-behavior: contain;
     scrollbar-gutter: stable;
     -webkit-overflow-scrolling: touch;
   }
   /* 虚拟滚动行：绝对定位由内联 style 给出 top，此处只管左右 */
   .cmt-row {
-    position: absolute;
-    left: 0;
-    right: 0;
+    @apply absolute inset-x-0;
   }
   /* 抽屉里定位到某条评论时的高亮 */
   .cmt-flash {
@@ -715,9 +574,7 @@
   }
   /* 子评论抽屉 */
   .cmt-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 70;
+    @apply fixed inset-0 z-[70];
     background-color: color-mix(in oklab, #0a0d12 58%, transparent);
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);

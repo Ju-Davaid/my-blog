@@ -7,6 +7,11 @@ const THEME_KEY = "mori-theme";
 
 export type ThemePref = "light" | "dark" | "system";
 
+/**
+ * 解析用户偏好：根据系统主题或查询参数返回实际主题。
+ * @param pref 用户偏好
+ * @returns 实际主题
+ */
 function resolveTheme(pref: ThemePref): "light" | "dark" {
   if (pref === "system") {
     return window.matchMedia("(prefers-color-scheme: dark)").matches

@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Icon } from "@/components/ui";
-import { ReadingProgress } from "@/components/post";
 import { CommentSection, LazyMount } from "@/components/comments";
 import { getPostBySlug, POSTS } from "@/lib/data";
 
@@ -47,8 +46,6 @@ export default async function PostPage({
 
   return (
     <>
-      {/* <ReadingProgress /> */}
-
       {/* 面包屑 */}
       <nav className="flex items-center gap-2 pt-8 text-xs text-muted-foreground">
         <Link href="/" className="transition-colors hover:text-primary">

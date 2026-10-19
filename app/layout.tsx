@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_SC, Noto_Serif_SC } from "next/font/google";
 import { SiteShell } from "@/components/layout";
+import themeInitScript from "@/assets/images/script/theme.js";
 import "./globals.css";
 
 const notoSans = Noto_Sans_SC({
@@ -41,24 +42,6 @@ export const metadata: Metadata = {
   ],
 };
 
-/* 主题防闪烁脚本：在首帧渲染前确定 light / dark / system 并写入 <html> */
-const themeInitScript = `
-(function () {
-  try {
-    var p = new URLSearchParams(location.search).get("theme")
-      || localStorage.getItem("mori-theme")
-      || "system";
-    var d = p === "system"
-      ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-      : p;
-    var el = document.documentElement;
-    el.classList.remove("light", "dark");
-    el.classList.add(d);
-    el.style.colorScheme = d;
-  } catch (e) {}
-})();
-`;
-
 export default function RootLayout({
   children,
 }: {
@@ -74,8 +57,6 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      {/* body 上不要写 overflow-x-hidden —— 横向裁剪统一放在 globals.css 的 html 上，
-          否则 html 的 overflow 非 visible 时 body 会变成滚动容器，header 的 sticky 会失效 */}
       <body className="flex min-h-screen flex-col pb-24 font-sans antialiased md:pb-0">
         <SiteShell>{children}</SiteShell>
       </body>

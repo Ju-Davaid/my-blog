@@ -100,12 +100,7 @@
     border-color: var(--border);
   }
 
-  /* ⚠ 横向裁剪必须写在**根元素**上，body 上不能再写 overflow-x: hidden。
-     原因：根元素的 overflow 会传播到视口；一旦 html 的 overflow 不是 visible，
-     浏览器就停止从 body 取值 —— 此时 body 上残留的 overflow-x:hidden 会让
-     **body 变成滚动容器**，.site-header 的 position:sticky 立刻失效（滚动后 header 跑掉）。 */
   html {
-    scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
     overflow-y: scroll;

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CommentComposer from "./CommentComposer";
 import CommentItem, { type CommentActions } from "./CommentItem";
-import CommentList, { type CommentListApi } from "./CommentList";
+import CommentList from "./CommentList";
 import ReplyPanel from "./ReplyPanel";
 import { Icon } from "@/components/ui";
 import {
@@ -15,18 +15,6 @@ import {
   type SortMode,
 } from "@/lib/comments";
 import { useComments } from "./useComments";
-
-/* ==========================================================================
-   评论区（对外唯一入口）
-   --------------------------------------------------------------------------
-   用法：
-     <CommentSection contentId="post-xxx" preset="article" layout="flow" />
-     <CommentSection contentId="moment-m1" preset="moment" maxHeight={420} />
-
-   layout：
-     box  —— 固定高度、内部滚动（信息流内的折叠区用）
-     flow —— 不设高度、随已加载评论自然撑开，跟随页面滚动（文章详情页 / B 站式）
-   ========================================================================== */
 
 export type CommentSectionProps = {
   /** 内容唯一标识，决定种子数据与本地存储分片 */
@@ -71,7 +59,10 @@ export default function CommentSection({
   enabled = true,
 }: CommentSectionProps) {
   const isFlow = layout === "flow";
-  const cfg = useMemo<SeedConfig>(() => seed ?? SEED_PRESETS[preset], [seed, preset]);
+  const cfg = useMemo<SeedConfig>(
+    () => seed ?? SEED_PRESETS[preset],
+    [seed, preset],
+  );
   const comments = useComments(contentId, cfg, enabled);
   const {
     ready,
@@ -81,7 +72,6 @@ export default function CommentSection({
     orderedRoots,
     repliesByRoot,
     total,
-    rootCount,
     addComment,
     toggleLike,
     removeComment,
@@ -92,9 +82,13 @@ export default function CommentSection({
     updateUserEmail,
   } = comments;
 
-  const [replyTo, setReplyTo] = useState<{ id: string; name: string } | null>(null);
-  const [thread, setThread] = useState<{ rootId: string; focusId?: string } | null>(null);
-  const apiRef = useRef<CommentListApi | null>(null);
+  const [replyTo, setReplyTo] = useState<{ id: string; name: string } | null>(
+    null,
+  );
+  const [thread, setThread] = useState<{
+    rootId: string;
+    focusId?: string;
+  } | null>(null);
   const composerRef = useRef<HTMLDivElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -163,7 +157,6 @@ export default function CommentSection({
         addComment({ content, parentId: null, ...identity });
       }
       setReplyTo(null);
-      apiRef.current?.scrollToTop();
     },
     [addComment, replyTo],
   );
@@ -174,13 +167,12 @@ export default function CommentSection({
       setSort(next);
       // 换排序后回到首批，避免页面高度断崖式变化
       setVisibleCount(initialCount);
-      apiRef.current?.scrollToTop();
     },
     [sort, setSort, initialCount],
   );
 
-  const threadRoot = thread ? byId.get(thread.rootId) ?? null : null;
-  const threadReplies = thread ? repliesByRoot.get(thread.rootId) ?? [] : [];
+  const threadRoot = thread ? (byId.get(thread.rootId) ?? null) : null;
+  const threadReplies = thread ? (repliesByRoot.get(thread.rootId) ?? []) : [];
 
   /**
    * 按内容估高：折叠的子评论数 + 正文行数。
@@ -198,33 +190,22 @@ export default function CommentSection({
   const displayTotal = ready ? total : estimateTotal(cfg);
 
   return (
-    <section id={`comments-${contentId}`} className={`scroll-mt-24 ${className}`}>
+    <section
+      id={`comments-${contentId}`}
+      className={`scroll-mt-24 ${className}`}
+    >
       {/* 标题 + 排序 */}
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-        <div>
+        <div className="flex gap-2 items-center">
           <h2 className="font-serif text-lg font-semibold tracking-wide text-foreground">
             评论
           </h2>
           <p className="mt-1 text-xs text-muted-foreground">
-            共 <span className="tabular-nums text-foreground/80">{formatCount(displayTotal)}</span> 条
-            {ready && (
-              <>
-                <span className="mx-1.5 opacity-40">·</span>
-                顶层 <span className="tabular-nums text-foreground/80">{rootCount}</span> 条
-                <span className="mx-1.5 opacity-40">·</span>
-                {isFlow ? (
-                  <>
-                    已加载{" "}
-                    <span className="tabular-nums text-foreground/80">
-                      {shownRoots.length}
-                    </span>{" "}
-                    条
-                  </>
-                ) : (
-                  "虚拟滚动中"
-                )}
-              </>
-            )}
+            共{" "}
+            <span className="tabular-nums text-foreground/80">
+              {formatCount(displayTotal)}
+            </span>{" "}
+            条
           </p>
         </div>
 
@@ -273,7 +254,6 @@ export default function CommentSection({
             mode={isFlow ? "window" : "container"}
             maxHeight={maxHeight}
             className="rounded-xl"
-            apiRef={apiRef}
             renderItem={(c) => (
               <CommentItem
                 comment={c}
@@ -295,23 +275,24 @@ export default function CommentSection({
               className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-border bg-card px-5 py-2 text-sm text-foreground transition-colors hover:border-primary/40 hover:text-primary"
             >
               <Icon name="chevron-down" className="h-3.5 w-3.5" />
-              加载更多评论（还剩 <span className="tabular-nums">{formatCount(remaining)}</span> 条）
+              加载更多评论（还剩
+              <span className="tabular-nums">
+                {formatCount(remaining)}
+              </span>{" "}
+              条）
             </button>
           ) : (
             <p className="text-xs text-muted-foreground">
-              已显示全部 <span className="tabular-nums">{formatCount(orderedRoots.length)}</span> 条评论
+              已显示全部{" "}
+              <span className="tabular-nums">
+                {formatCount(orderedRoots.length)}
+              </span>{" "}
+              条评论
             </p>
           )}
           <div ref={sentinelRef} className="h-px w-full" aria-hidden="true" />
         </div>
       )}
-
-      {/* 底部说明 */}
-      <p className="mt-3 text-[11px] text-muted-foreground/80">
-        {isFlow
-          ? "评论随页面滚动、分批加载；点赞与新增评论保存在本机浏览器中。"
-          : "仅渲染可视区行，滚动时复用节点；点赞与新增评论保存在本机浏览器中。"}
-      </p>
 
       {/* 子评论抽屉 */}
       <ReplyPanel
@@ -351,7 +332,10 @@ function CommentSkeleton({ count }: { count: number }) {
     <div className="space-y-2.5" aria-busy="true" aria-live="polite">
       <span className="sr-only">评论加载中</span>
       {Array.from({ length: count }, (_, i) => (
-        <div key={i} className="flex gap-3 rounded-xl border border-border bg-card p-3.5">
+        <div
+          key={i}
+          className="flex gap-3 rounded-xl border border-border bg-card p-3.5"
+        >
           <div className="cmt-skel h-8.5 w-8.5 shrink-0 rounded-full" />
           <div className="min-w-0 flex-1 space-y-2">
             <div className="cmt-skel h-3 w-24 rounded" />

@@ -184,7 +184,7 @@ export default function CommentComposer({
               }
             }}
             placeholder={placeholder}
-            className="w-full resize-none bg-transparent text-sm leading-relaxed text-foreground outline-none placeholder:text-muted-foreground/70"
+            className="w-full min-h-20 resize-none bg-transparent text-sm leading-relaxed text-foreground outline-none placeholder:text-muted-foreground/70"
           />
 
           {/* 验证码 */}

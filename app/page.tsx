@@ -101,7 +101,7 @@ export default function HomePage() {
                   className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                 />
                 {/* 底部渐变遮罩，保证角标在任何封面下都可读 */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-black/55 via-black/10 to-transparent"></div>
                 <span className="relative pb-4 font-serif text-5xl tracking-[0.2em] text-white/85 drop-shadow-md">
                   01
                 </span>

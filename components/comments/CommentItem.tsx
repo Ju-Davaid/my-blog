@@ -3,11 +3,7 @@
 import { memo, useState } from "react";
 import Avatar from "./Avatar";
 import { Icon } from "@/components/ui";
-import {
-  formatCount,
-  formatTime,
-  type Comment,
-} from "@/lib/comments";
+import { formatCount, formatTime, type Comment } from "@/lib/comments";
 
 /* ==========================================================================
    单条评论 / 子评论行
@@ -29,12 +25,12 @@ export type ReplyActions = Omit<CommentActions, "onOpenThread">;
 
 const INLINE_REPLIES = 2;
 
-/* --------------------------------------------------------------------------
-   文本：@提及高亮 + 长文本折叠
-   -------------------------------------------------------------------------- */
-
 const MENTION_RE = /(@[^\s@，。！？、；：,.!?;:]{1,16})/g;
-
+/**
+ * 渲染评论内容中的 @提及，最多 16 个字符，支持中文、英文、数字、下划线。
+ * @param text 评论内容
+ * @returns 渲染后的评论内容
+ */
 function renderMentions(text: string) {
   const parts = text.split(MENTION_RE);
   if (parts.length === 1) return text;
@@ -109,11 +105,20 @@ function LikeButton({
       aria-pressed={active}
       aria-label={active ? "取消点赞" : "点赞"}
       className={`inline-flex shrink-0 cursor-pointer select-none flex-col items-center gap-0.5 px-1 transition-colors ${
-        active ? "text-destructive" : "text-muted-foreground hover:text-foreground"
+        active
+          ? "text-destructive"
+          : "text-muted-foreground hover:text-foreground"
       }`}
     >
-      <span key={tick} className={tick > 0 ? "cmt-like-pop inline-flex" : "inline-flex"}>
-        <Icon name="heart" className={icon} style={{ fill: active ? "currentColor" : "none" }} />
+      <span
+        key={tick}
+        className={tick > 0 ? "cmt-like-pop inline-flex" : "inline-flex"}
+      >
+        <Icon
+          name="heart"
+          className={icon}
+          style={{ fill: active ? "currentColor" : "none" }}
+        />
       </span>
       <span className="text-[11px] leading-none tabular-nums">
         {count > 0 ? formatCount(count) : ""}
@@ -137,14 +142,20 @@ function ReplyRow({
 }) {
   return (
     <div className="group flex gap-2.5">
-      <Avatar src={comment.author.avatar} alt={comment.author.name} size={dense ? 24 : 26} />
+      <Avatar
+        src={comment.author.avatar}
+        alt={comment.author.name}
+        size={dense ? 24 : 26}
+      />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-1.5">
           <span className="truncate text-xs font-medium text-foreground/85">
             {comment.author.name}
           </span>
           {comment.author.badge && (
-            <span className="tag shrink-0 scale-90 px-1.5 py-0">{comment.author.badge}</span>
+            <span className="tag shrink-0 scale-90 px-1.5 py-0">
+              {comment.author.badge}
+            </span>
           )}
           {comment.replyToName && !comment.content.startsWith("@") && (
             <span className="shrink-0 text-[11px] text-muted-foreground">
@@ -202,12 +213,17 @@ function CommentItem({
 }) {
   const total = replies.length;
   // 抖音式：短线程直接铺开，长线程只露前 2 条，其余进抽屉
-  const visible = total > INLINE_REPLIES ? replies.slice(0, INLINE_REPLIES) : replies;
+  const visible =
+    total > INLINE_REPLIES ? replies.slice(0, INLINE_REPLIES) : replies;
 
   return (
     <div className="rounded-xl border border-border bg-card p-3.5 transition-colors hover:border-primary/30">
       <div className="flex gap-3">
-        <Avatar src={comment.author.avatar} alt={comment.author.name} size={34} />
+        <Avatar
+          src={comment.author.avatar}
+          alt={comment.author.name}
+          size={34}
+        />
 
         <div className="min-w-0 flex-1">
           <div className="flex items-start gap-2">
@@ -217,10 +233,14 @@ function CommentItem({
                   {comment.author.name}
                 </span>
                 {comment.author.badge && (
-                  <span className="tag scale-90 px-1.5 py-0">{comment.author.badge}</span>
+                  <span className="tag scale-90 px-1.5 py-0">
+                    {comment.author.badge}
+                  </span>
                 )}
                 {comment.mine && comment.author.badge !== "我" && (
-                  <span className="text-[11px] text-muted-foreground">（我）</span>
+                  <span className="text-[11px] text-muted-foreground">
+                    （我）
+                  </span>
                 )}
               </div>
               <CommentText text={comment.content} />
@@ -235,7 +255,9 @@ function CommentItem({
 
           {/* 元信息 */}
           <div className="mt-1.5 flex items-center gap-3 text-[11px] text-muted-foreground">
-            <span className="tabular-nums">{formatTime(comment.createdAt)}</span>
+            <span className="tabular-nums">
+              {formatTime(comment.createdAt)}
+            </span>
             {comment.location && <span>{comment.location}</span>}
             <button
               type="button"

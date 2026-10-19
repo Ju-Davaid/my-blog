@@ -5,7 +5,6 @@ import { Icon } from "@/components/ui";
  * 页脚：品牌、版权与社交链接。
  */
 export default function Footer() {
-  // 年份为静态值，避免 Next.js 16 缓存组件在预渲染时对 new Date() 报错
   const year = 2026;
   const socials: { icon: "github" | "mail" | "rss"; label: string }[] = [
     { icon: "github", label: "GitHub" },
@@ -14,10 +13,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer
-      className="relative z-10 mx-auto mt-24 w-full px-5 pb-28 md:pb-12"
-      style={{ maxWidth: 1100 }}
-    >
+    <footer className="relative z-10 mx-auto mt-24 w-full px-5 pb-28 md:pb-12">
       <div className="border-t border-border pt-8">
         <div className="flex flex-col items-center justify-between gap-5 md:flex-row">
           <div className="text-center md:text-left">

@@ -41,7 +41,7 @@ type Options = {
 /** 高度差在这个范围内不做更新，避免亚像素抖动引起反复重排 */
 const EPS = 0.5;
 
-export function useVirtualList({
+export const useVirtualList = ({
   count,
   estimateSize,
   estimates,
@@ -49,11 +49,16 @@ export function useVirtualList({
   overscan = 6,
   getKey,
   mode = "container",
-}: Options) {
+}: Options) => {
+  // 是否是 window 模式
   const isWindow = mode === "window";
+  // 虚拟列表容器元素
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  // 
   const rafRef = useRef(0);
+  // 测量函数引用
   const measureRef = useRef<() => void>(() => {});
+  // 行高缓存
   const [sizes, setSizes] = useState<Map<string, number>>(() => new Map());
   const [scrollTop, setScrollTop] = useState(0);
   const [viewport, setViewport] = useState(0);
@@ -63,7 +68,7 @@ export function useVirtualList({
     [sizes, estimates, estimateSize],
   );
 
-  /* ---------- 几何：偏移表 + 总高 ---------- */
+  /** 几何信息：偏移表 + 总高 */
   const geometry = useMemo(() => {
     const offsets = new Array<number>(count);
     let acc = 0;
@@ -238,4 +243,4 @@ export function useVirtualList({
     scrollToIndex,
     scrollToTop,
   };
-}
+};

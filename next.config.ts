@@ -5,6 +5,7 @@ import type { NextConfig } from "next";
 const standalone = process.env.NEXT_STANDALONE === "1";
 
 const nextConfig: NextConfig = {
+  distDir: process.env.NEXT_DIST_DIR || undefined,
   output: standalone ? "standalone" : undefined,
   cacheComponents: true,
   partialPrefetching: true,

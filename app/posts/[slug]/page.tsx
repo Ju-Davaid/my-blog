@@ -47,7 +47,7 @@ export default async function PostPage({
 
   return (
     <>
-      <ReadingProgress />
+      {/* <ReadingProgress /> */}
 
       {/* 面包屑 */}
       <nav className="flex items-center gap-2 pt-8 text-xs text-muted-foreground">

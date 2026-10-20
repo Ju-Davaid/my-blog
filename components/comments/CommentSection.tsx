@@ -122,35 +122,54 @@ export default function CommentSection({
   const actions = useMemo<CommentActions>(
     () => ({
       onLike: toggleLike,
-      onReply: (comment) => {
-        setReplyTo({ id: comment.id, name: comment.author.name });
-        // flow 模式输入框固定在视口底部，始终可见，聚焦即可
-        if (isFlow) {
-          const el = composerRef.current?.querySelector("textarea");
-          el?.focus();
-        }
-      },
+      // 回复输入框内联出现在对应评论下方，由 replyTo.id 定位
+      onReply: (comment) =>
+        setReplyTo({ id: comment.id, name: comment.author.name }),
       onDelete: removeComment,
     }),
-    [toggleLike, removeComment, isFlow],
+    [toggleLike, removeComment],
   );
 
+  /** 顶层输入框（box 顶部 / flow 吸底）只发顶层评论 */
   const handleSubmit = useCallback(
     (content: string, identity: { name: string; email: string }) => {
-      if (replyTo) {
-        addComment({
-          content,
-          parentId: replyTo.id,
-          replyToName: replyTo.name,
-          ...identity,
-        });
-      } else {
-        addComment({ content, parentId: null, ...identity });
-      }
+      addComment({ content, parentId: null, ...identity });
+    },
+    [addComment],
+  );
+
+  /** 内联回复输入框：提交到正在回复的那条评论所在线程 */
+  const handleInlineSubmit = useCallback(
+    (content: string, identity: { name: string; email: string }) => {
+      if (!replyTo) return;
+      addComment({
+        content,
+        parentId: replyTo.id,
+        replyToName: replyTo.name,
+        ...identity,
+      });
       setReplyTo(null);
     },
     [addComment, replyTo],
   );
+
+  /** 内联回复输入框（渲染在对应评论下方） */
+  const inlineComposer = replyTo ? (
+    <div className="mt-2.5">
+      <CommentComposer
+        compact
+        autoFocus
+        onSubmit={handleInlineSubmit}
+        replyTo={replyTo}
+        onCancelReply={() => setReplyTo(null)}
+        userName={userName}
+        onUserNameChange={updateUserName}
+        userEmail={userEmail}
+        onUserEmailChange={updateUserEmail}
+        placeholder={`回复 @${replyTo.name}…`}
+      />
+    </div>
+  ) : null;
 
   const handleSort = useCallback(
     (next: SortMode) => {
@@ -215,13 +234,27 @@ export default function CommentSection({
         </div>
       </div>
 
-      {/* 输入框（box：挂在顶部；flow：吸底，见下方 sticky 容器） */}
+      {/* 输入框（box：挂在顶部；flow：吸顶固定在标题下方）。只发顶层评论 */}
       {!isFlow && (
         <div ref={composerRef}>
           <CommentComposer
             onSubmit={handleSubmit}
-            replyTo={replyTo}
-            onCancelReply={() => setReplyTo(null)}
+            userName={userName}
+            onUserNameChange={updateUserName}
+            userEmail={userEmail}
+            onUserEmailChange={updateUserEmail}
+            placeholder="写下你的想法…"
+          />
+        </div>
+      )}
+
+      {isFlow && (
+        <div
+          ref={composerRef}
+          className="z-30 top-14 mt-4 [&>div]:bg-card [&>div]:shadow-[0_12px_32px_-18px_rgba(0,0,0,0.35)]"
+        >
+          <CommentComposer
+            onSubmit={handleSubmit}
             userName={userName}
             onUserNameChange={updateUserName}
             userEmail={userEmail}
@@ -249,6 +282,8 @@ export default function CommentSection({
                 comment={c}
                 replies={repliesByRoot.get(c.id) ?? EMPTY_REPLIES}
                 actions={actions}
+                replyToId={replyTo?.id}
+                composer={inlineComposer}
               />
             )}
           />
@@ -281,25 +316,6 @@ export default function CommentSection({
             </p>
           )}
           <div ref={sentinelRef} className="h-px w-full" aria-hidden="true" />
-        </div>
-      )}
-
-      {/* flow：吸底输入框（移动端抬高避开底部胶囊导航） */}
-      {isFlow && (
-        <div
-          ref={composerRef}
-          className="sticky z-30 max-md:bottom-21 md:bottom-0 mt-5 pb-1 [&>div]:bg-card [&>div]:shadow-[0_-12px_32px_-18px_rgba(0,0,0,0.35)]"
-        >
-          <CommentComposer
-            onSubmit={handleSubmit}
-            replyTo={replyTo}
-            onCancelReply={() => setReplyTo(null)}
-            userName={userName}
-            onUserNameChange={updateUserName}
-            userEmail={userEmail}
-            onUserEmailChange={updateUserEmail}
-            placeholder="写下你的想法…"
-          />
         </div>
       )}
     </section>

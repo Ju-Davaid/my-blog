@@ -3,23 +3,21 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/ui";
 import {
-  checkCaptcha,
   estimateTotal,
   formatCount,
-  isValidEmail,
   makeMomentConfig,
   type Comment,
 } from "@/lib/comments";
-import Captcha from "./Captcha";
+import CommentComposer from "./CommentComposer";
 import { useComments } from "./useComments";
 
 /* ==========================================================================
    动态页（朋友圈信息流）的评论区 —— 微信朋友圈样式 + 分页
    --------------------------------------------------------------------------
-   · 默认展开：灰底扁平评论块直接可见，元信息行保留「💬 N」气泡可收起/再展开
+   · 灰底扁平评论块，元信息行保留「💬 N」气泡可收起/再展开
    · 每页最多 10 条，底部「共 N 页 / 页码 / 下一页 / 收起」分页行（B 站式）
    · 无头像 / 无点赞 / 无排序，全部评论按时间正序分页平铺
-   · 回复：点某条评论 → 输入框变为「回复 @昵称」，发布后以「回复 @xxx」归入同线程
+   · 回复：点某条评论的「回复」→ 输入框内联出现在该评论下方，发布后以「回复 @xxx」归入同线程
    ========================================================================== */
 
 const PAGE_SIZE = 10;
@@ -56,15 +54,6 @@ export default function MomentComments({
   } = useComments(`moment-${momentId}`, cfg, open);
 
   const [replyTo, setReplyTo] = useState<Comment | null>(null);
-  const [draft, setDraft] = useState("");
-  const [captchaInput, setCaptchaInput] = useState("");
-  const [captchaCode, setCaptchaCode] = useState("");
-  const [captchaNonce, setCaptchaNonce] = useState(0);
-  const [errors, setErrors] = useState<{
-    name?: string;
-    email?: string;
-    captcha?: string;
-  }>({});
   const panelRef = useRef<HTMLDivElement | null>(null);
   const tailRef = useRef<HTMLDivElement | null>(null);
 
@@ -74,11 +63,9 @@ export default function MomentComments({
     [all],
   );
 
-  const rawPageCount = ready
+  const pageCount = ready
     ? Math.max(1, Math.ceil(flat.length / PAGE_SIZE))
     : 1;
-  /** 删除评论后总页数可能缩水，展示与切片都做钳制（不用 effect，规避 lint 规则） */
-  const pageCount = rawPageCount;
   const currentPage = Math.min(page, pageCount);
   const paged = ready
     ? flat.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
@@ -106,7 +93,6 @@ export default function MomentComments({
 
   const goToPage = useCallback((n: number) => {
     setPage(n);
-    // 换页后把面板顶部滚进视口，避免停留在长列表的旧位置
     requestAnimationFrame(() =>
       panelRef.current?.scrollIntoView({
         behavior: "smooth",
@@ -115,59 +101,28 @@ export default function MomentComments({
     );
   }, []);
 
-  const submit = useCallback(() => {
-    const content = draft.trim();
-    const name = userName.trim();
-    const email = userEmail.trim();
-    if (!content) return;
-
-    const next: typeof errors = {};
-    if (!name) next.name = "请填写昵称";
-    if (!email) next.email = "请填写邮箱";
-    else if (!isValidEmail(email)) next.email = "邮箱格式不正确";
-    if (!captchaInput.trim()) next.captcha = "请填写验证码";
-    else if (!checkCaptcha(captchaInput, captchaCode))
-      next.captcha = "验证码不正确";
-
-    setErrors(next);
-    if (Object.keys(next).length > 0) {
-      if (next.captcha) {
-        setCaptchaInput("");
-        setCaptchaNonce((n) => n + 1);
-      }
-      return;
-    }
-
-    if (replyTo) {
+  /** 内联回复提交：归入对应评论的线程 */
+  const handleInlineSubmit = useCallback(
+    (content: string, identity: { name: string; email: string }) => {
+      if (!replyTo) return;
       addComment({
         content,
         parentId: replyTo.id,
         replyToName: replyTo.author.name,
-        name,
-        email,
+        ...identity,
       });
       setReplyTo(null);
-    } else {
-      addComment({ content, parentId: null, name, email });
-    }
-    setDraft("");
-    setCaptchaInput("");
-    setCaptchaNonce((n) => n + 1);
-    // 新评论在时间正序的末尾，跳到最后一页并滚到面板底部
-    setPage(Math.floor(flat.length / PAGE_SIZE) + 1);
-    requestAnimationFrame(() =>
-      tailRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }),
-    );
-  }, [
-    draft,
-    replyTo,
-    addComment,
-    flat.length,
-    userName,
-    userEmail,
-    captchaInput,
-    captchaCode,
-  ]);
+      // 新评论在时间正序的末尾，跳到最后一页并滚到面板底部
+      setPage(Math.floor(flat.length / PAGE_SIZE) + 1);
+      requestAnimationFrame(() =>
+        tailRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        }),
+      );
+    },
+    [replyTo, addComment, flat.length],
+  );
 
   return (
     <>
@@ -208,7 +163,7 @@ export default function MomentComments({
         </button>
       </div>
 
-      {/* 朋友圈式评论块（默认展开） */}
+      {/* 朋友圈式评论块 */}
       {open && (
         <div ref={panelRef} className="mt-2.5 rounded-lg bg-muted/70 px-4 py-3">
           {!ready ? (
@@ -261,108 +216,35 @@ export default function MomentComments({
                     )}
                   </p>
                   <p className="mt-0.5 text-card-foreground">{c.content}</p>
+
+                  {/* 回复按钮 + 内联输入框 */}
+                  {replyTo?.id !== c.id ? (
+                    <button
+                      type="button"
+                      onClick={() => setReplyTo(c)}
+                      className="mt-1 cursor-pointer text-[11px] text-muted-foreground transition-colors hover:text-primary"
+                    >
+                      回复
+                    </button>
+                  ) : (
+                    <div className="mt-2">
+                      <CommentComposer
+                        compact
+                        autoFocus
+                        onSubmit={handleInlineSubmit}
+                        replyTo={{ id: c.id, name: c.author.name }}
+                        onCancelReply={() => setReplyTo(null)}
+                        userName={userName}
+                        onUserNameChange={updateUserName}
+                        userEmail={userEmail}
+                        onUserEmailChange={updateUserEmail}
+                        placeholder={`回复 @${c.author.name}…`}
+                      />
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
-          )}
-
-          {/* 底部输入区：昵称 / 邮箱 / 验证码 均为必填 */}
-          {ready && (
-            <div className="mt-3 space-y-2 border-t border-border/60 pt-3">
-              {replyTo && (
-                <span className="inline-flex max-w-40 items-center gap-1 truncate rounded bg-primary/10 px-2 py-1 text-[11px] text-primary">
-                  回复 @{replyTo.author.name}
-                  <button
-                    type="button"
-                    onClick={() => setReplyTo(null)}
-                    aria-label="取消回复"
-                    className="cursor-pointer opacity-70 transition-opacity hover:opacity-100"
-                  >
-                    ×
-                  </button>
-                </span>
-              )}
-
-              <div className="flex items-center gap-2">
-                <input
-                  value={userName}
-                  onChange={(e) => {
-                    updateUserName(e.target.value.slice(0, 16));
-                    if (errors.name)
-                      setErrors((p) => ({ ...p, name: undefined }));
-                  }}
-                  placeholder="昵称 *"
-                  aria-label="昵称"
-                  className={`w-24 rounded-md border bg-background px-2 py-1.5 text-[12px] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/50 ${
-                    errors.name ? "border-destructive/70" : "border-border"
-                  }`}
-                />
-                <input
-                  type="email"
-                  value={userEmail}
-                  onChange={(e) => {
-                    updateUserEmail(e.target.value.slice(0, 64));
-                    if (errors.email)
-                      setErrors((p) => ({ ...p, email: undefined }));
-                  }}
-                  placeholder="邮箱 *"
-                  aria-label="邮箱"
-                  className={`min-w-0 flex-1 rounded-md border bg-background px-2 py-1.5 text-[12px] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/50 ${
-                    errors.email ? "border-destructive/70" : "border-border"
-                  }`}
-                />
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  value={captchaInput}
-                  onChange={(e) => {
-                    setCaptchaInput(e.target.value.slice(0, 6));
-                    if (errors.captcha)
-                      setErrors((p) => ({ ...p, captcha: undefined }));
-                  }}
-                  placeholder="验证码 *"
-                  aria-label="验证码"
-                  className={`w-20 rounded-md border bg-background px-2 py-1.5 text-center text-[12px] tracking-widest text-foreground outline-none transition-colors placeholder:tracking-normal placeholder:text-muted-foreground focus:border-primary/50 ${
-                    errors.captcha ? "border-destructive/70" : "border-border"
-                  }`}
-                />
-                <Captcha
-                  onChange={setCaptchaCode}
-                  refreshKey={captchaNonce}
-                  compact
-                />
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  value={draft}
-                  onChange={(e) => setDraft(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.nativeEvent.isComposing)
-                      submit();
-                  }}
-                  placeholder={
-                    replyTo ? `回复 @${replyTo.author.name}…` : "评论内容 *"
-                  }
-                  className="min-w-0 flex-1 rounded-md border border-border bg-background px-3 py-1.5 text-[13px] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/50"
-                />
-                <button
-                  type="button"
-                  onClick={submit}
-                  disabled={!draft.trim()}
-                  className="cursor-pointer rounded-md bg-primary px-3 py-1.5 text-[13px] text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  发送
-                </button>
-              </div>
-
-              {(errors.name || errors.email || errors.captcha) && (
-                <p className="text-[11px] text-destructive" role="alert">
-                  {errors.name ?? errors.email ?? errors.captcha}
-                </p>
-              )}
-            </div>
           )}
 
           {/* 分页行：共 N 页 · 页码 · 上一页/下一页 · 收起 */}

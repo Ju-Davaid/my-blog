@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useState } from "react";
+import { memo, useState, type ReactNode } from "react";
 import Avatar from "./Avatar";
 import { Icon } from "@/components/ui";
 import { formatCount, formatTime, type Comment } from "@/lib/comments";
@@ -207,10 +207,16 @@ function CommentItem({
   comment,
   replies,
   actions,
+  replyToId,
+  composer,
 }: {
   comment: Comment;
   replies: Comment[];
   actions: CommentActions;
+  /** 正在回复的评论 id（顶层或其子评论），命中时在该评论下方渲染内联输入框 */
+  replyToId?: string;
+  /** 内联回复输入框（由父级统一构造，避免每项重复状态） */
+  composer?: ReactNode;
 }) {
   const total = replies.length;
   const [expanded, setExpanded] = useState(false);
@@ -288,18 +294,27 @@ function CommentItem({
             )}
           </div>
 
+          {/* 回复这条顶层评论：输入框内联出现在下方 */}
+          {replyToId === comment.id && composer}
+
           {/* 内联子评论 */}
           {total > 0 && (
             <div className="mt-2.5 rounded-lg bg-muted/70 px-3 py-2.5">
               <div className="space-y-2.5">
                 {visible.map((r) => (
-                  <ReplyRow key={r.id} comment={r} actions={actions} dense />
+                  <div key={r.id}>
+                    <ReplyRow comment={r} actions={actions} dense />
+                    {replyToId === r.id && composer}
+                  </div>
                 ))}
 
                 {/* 展开后的分页回复 */}
                 {expanded &&
                   paged.map((r) => (
-                    <ReplyRow key={r.id} comment={r} actions={actions} dense />
+                    <div key={r.id}>
+                      <ReplyRow comment={r} actions={actions} dense />
+                      {replyToId === r.id && composer}
+                    </div>
                   ))}
               </div>
 

@@ -54,28 +54,39 @@ export const useVirtualList = ({
   const isWindow = mode === "window";
   // 虚拟列表容器元素
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  // 
-  const rafRef = useRef(0);
+  // rAF 引用，用于节流
+  const rafRef = useRef<number>(0);
   // 测量函数引用
   const measureRef = useRef<() => void>(() => {});
   // 行高缓存
   const [sizes, setSizes] = useState<Map<string, number>>(() => new Map());
-  const [scrollTop, setScrollTop] = useState(0);
-  const [viewport, setViewport] = useState(0);
-
+  /** 滚动位置（px），从 0 开始 */
+  const [scrollTop, setScrollTop] = useState<number>(0);
+  /** 视口高度（px） */
+  const [viewport, setViewport] = useState<number>(0);
+  /** 行高估值函数，先按 estimateSize 占位，行挂载后把实测高度回传给 onMeasure */
   const estimateOf = useCallback(
     (key: string) => sizes.get(key) ?? estimates?.get(key) ?? estimateSize,
     [sizes, estimates, estimateSize],
   );
-
-  /** 几何信息：偏移表 + 总高 */
-  const geometry = useMemo(() => {
+  type Geometry = {
+    /** 偏移表，每个行的偏移量（px） */
+    offsets: number[];
+    /** 总高（px） */
+    total: number;
+  };
+  /**
+   * 几何信息：偏移表 + 总高
+   */
+  const geometry = useMemo<Geometry>(() => {
     const offsets = new Array<number>(count);
     let acc = 0;
     for (let i = 0; i < count; i++) {
       offsets[i] = acc;
       acc += estimateOf(getKey(i)) + gap;
     }
+    // 总高 = 最后一行偏移量 + 最后一行高度 - 行间距
+    // （注意：最后一行的偏移量是 0，高度是 0，间距是 gap）
     return { offsets, total: count > 0 ? Math.max(0, acc - gap) : 0 };
   }, [count, getKey, estimateOf, gap]);
 
@@ -90,9 +101,14 @@ export const useVirtualList = ({
       return next;
     });
   }, []);
-
-  /* ---------- 可视区间 ---------- */
-  const range = useMemo(() => {
+  type Range = {
+    /** 可视区间起始行索引 */
+    start: number;
+    /** 可视区间结束行索引 */
+    end: number;
+  };
+  /** 可视区间索引范围 */
+  const range = useMemo<Range>(() => {
     if (count <= 0) return { start: 0, end: 0 };
     if (viewport <= 0) {
       // 首帧（尚未测量）或列表整体在视口外，先给一段占位行
@@ -100,6 +116,7 @@ export const useVirtualList = ({
     }
 
     const { offsets } = geometry;
+    // 二分查找第一个大于等于 scrollTop 的偏移量，作为可视区间起始行索引
     let lo = 0;
     let hi = count;
     while (lo < hi) {
@@ -108,14 +125,20 @@ export const useVirtualList = ({
         lo = mid + 1;
       else hi = mid;
     }
+    // 可视区间起始行索引 = 最大（0，起始偏移量 - 视口额外渲染行数）
     const start = Math.max(0, lo - overscan);
+    /**
+     * 内容顶部 ──scrollTop──▶ 可视区上边 ──viewport──▶ 可视区下边
+     * 内容顶部 ──────────scrollTop + viewport──────────▶ 可视区下边
+     *                                                      ↑ 就是 limit
+     */
     const limit = scrollTop + viewport;
     let end = lo;
     while (end < count && offsets[end] < limit) end++;
     end = Math.min(count, Math.max(end + overscan, start + 1));
     return { start, end };
   }, [geometry, scrollTop, viewport, count, getKey, estimateOf, gap, overscan]);
-
+  /** 可视区间行索引列表 */
   const items = useMemo<VirtualItem[]>(() => {
     const list: VirtualItem[] = [];
     for (let i = range.start; i < range.end; i++) {
@@ -128,14 +151,18 @@ export const useVirtualList = ({
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-
+    /**
+     * 提交滚动位置和视口高度
+     * @param nextTop 滚动位置（px）
+     * @param nextViewport 视口高度（px）
+     */
     const commit = (nextTop: number, nextViewport: number) => {
       setScrollTop((prev) => (Math.abs(prev - nextTop) < EPS ? prev : nextTop));
       setViewport((prev) =>
         Math.abs(prev - nextViewport) < EPS ? prev : nextViewport,
       );
     };
-
+    /** 测量滚动源 */
     const measure = () => {
       if (!isWindow) {
         commit(el.scrollTop, el.clientHeight);
@@ -146,7 +173,17 @@ export const useVirtualList = ({
       const rect = el.getBoundingClientRect();
       const winH = window.innerHeight || document.documentElement.clientHeight;
       const height = rect.height;
+      /**
+       * 列表内部滚了多远
+       * Math.max(-rect.top, 0) 列表顶部在视口内，滚动量为负
+       * Math.max(0, height) 列表底部在视口内，滚动量为正
+       */
       const scrolled = Math.min(Math.max(-rect.top, 0), Math.max(0, height));
+      /**
+       * 真正看得见多高
+       * height - scrolled 容器里还剩多少内容没被滚上去
+       * winH - Math.max(rect.top, 0) 浏览器视口还能给容器留多少高度（容器顶部在视口内时是`winH - rect.top` ，已经滚上去了则整个`winH` 都可用
+       */
       const visible = Math.max(
         0,
         Math.min(height - scrolled, winH - Math.max(rect.top, 0)),

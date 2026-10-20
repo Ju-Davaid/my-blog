@@ -561,13 +561,13 @@
   .cmt-flash {
     animation: cmt-flash 1.8s ease-out both;
   }
-  /* 骨架屏 */
+  /* 骨架屏：中间色比底色深一档，保证浅色主题下也清晰可见 */
   .cmt-skel {
     background: linear-gradient(
       90deg,
-      var(--muted) 25%,
-      color-mix(in oklab, var(--muted) 45%, var(--card)) 37%,
-      var(--muted) 63%
+      color-mix(in oklab, var(--muted-foreground) 14%, var(--muted)) 25%,
+      color-mix(in oklab, var(--muted-foreground) 34%, var(--muted)) 37%,
+      color-mix(in oklab, var(--muted-foreground) 14%, var(--muted)) 63%
     );
     background-size: 400% 100%;
     animation: cmt-shimmer 1.4s ease infinite;

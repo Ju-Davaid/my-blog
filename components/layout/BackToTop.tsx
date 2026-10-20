@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui";
+import { usePathname } from "next/navigation";
 
 const SHOW_AFTER = 400; // 滚动多少像素后出现
 const R = 18;
@@ -16,6 +17,7 @@ export default function BackToTop() {
   const ringRef = useRef<SVGCircleElement | null>(null);
   const visibleRef = useRef(false);
   const ticking = useRef(false);
+  const currentPath = usePathname();
 
   useEffect(() => {
     const update = () => {
@@ -69,7 +71,7 @@ export default function BackToTop() {
       title="回到顶部"
       aria-hidden={visible ? undefined : true}
       tabIndex={visible ? 0 : -1}
-      className={`fixed right-4 bottom-24 z-40 inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-border bg-card/90 text-muted-foreground shadow-[0_8px_24px_-8px_rgba(0,0,0,0.35)] backdrop-blur transition-all duration-300 hover:border-primary/50 hover:text-primary hover:shadow-[0_10px_28px_-8px_rgba(0,0,0,0.45)] md:right-6 md:bottom-8 ${
+      className={`fixed right-4 bottom-24 ${currentPath.startsWith("/posts") && "not-lg:bottom-80"} z-40 inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-border bg-card/90 text-muted-foreground shadow-[0_8px_24px_-8px_rgba(0,0,0,0.35)] backdrop-blur transition-all duration-300 hover:border-primary/50 hover:text-primary hover:shadow-[0_10px_28px_-8px_rgba(0,0,0,0.45)] md:right-6 md:bottom-8 ${
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-3 opacity-0"

@@ -15,7 +15,7 @@ export default function PostCard({ post }: { post: Post }) {
   return (
     <Link href={`/posts/${post.slug}`} className="group flex min-w-0 flex-col">
       {/* 封面 */}
-      <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-muted shadow-sm">
+      <div className="relative aspect-16/10 w-full overflow-hidden rounded-xl bg-muted shadow-sm">
         <Image
           src={postCover(post)}
           alt={post.title}
@@ -25,7 +25,7 @@ export default function PostCard({ post }: { post: Post }) {
           className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
         />
         {post.pinned && (
-          <span className="absolute left-3 top-3 rounded-full bg-background/80 px-2.5 py-0.5 text-[11px] text-accent backdrop-blur">
+          <span className="absolute left-3 top-3 rounded-full bg-background/80 px-2.5 py-0.5 text-[11px] text-primary backdrop-blur">
             置顶
           </span>
         )}
